@@ -1,14 +1,8 @@
-Thanks for checking out my police plugin. Here is some information on how to use this.
-
-**Usage**
-
-To add a police do /police admin police add (username)
-
-To jail a player, make sure you are a police and attack a player with a blaze rod
+Simple Police is an easy to use police plugin with many features
 
 **Features**
 
-Here is a list of things this plugin can do:
+A list of things this plugin can do:
 1. Jail Players
 2. Frisk Players
 3. Police Chat
@@ -40,6 +34,12 @@ Police can teleport to players within a configuged radius of them which notifies
 Police Chat:
 
 Police can chat with /police chat
+
+**Basic Usage**
+
+To add a police do /police admin police add (username)
+
+To jail a player, make sure you are a police and attack a player with a blaze rod
 
 **Permissions**
 
@@ -74,6 +74,12 @@ SimplePolice.cmd.chat:
 /police help - displays all the police commands
 
 /police admin help - displays all the admin commands
+
+/police admin police add (player) - adds a police
+
+/police admin jail add (name) - creates a jail
+
+/police admin frisk add - adds the item in your hand to the frisk list
 
 /911 - calls the police
 
