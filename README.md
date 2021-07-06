@@ -2,7 +2,7 @@ Simple Police is an easy to use police plugin with many features
 
 **Features**
 
-A list of things this plugin can do:
+A basic list of things this plugin can do:
 1. Jail Players
 2. Frisk Players
 3. Police Chat
