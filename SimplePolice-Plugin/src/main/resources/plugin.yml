@@ -1,0 +1,42 @@
+name: SimplePolice
+author: ramdon_person
+main: com.voidcitymc.plugins.SimplePolice.SimplePolice
+version: ${project.version}
+api-version: 1.13
+softdepend: [Vault, QualityArmory, WorldGuard, WorldEdit]
+website: https://plugins.voidcitymc.com
+commands:
+  police:
+    description: main police command
+    usage: /police
+  911:
+    description: call the cops
+    usage: /911
+permissions:
+  SimplePolice.cmd.admin.help:
+    default: op
+    description: allows you to see the admin help pages
+  SimplePolice.cmd.admin.reload:
+    default: op
+  SimplePolice.cmd.admin.frisk.add:
+    default: op
+  SimplePolice.cmd.admin.frisk.remove:
+    default: op
+  SimplePolice.cmd.admin.frisk.list:
+    default: op
+  SimplePolice.cmd.admin.police.add:
+    default: op
+  SimplePolice.cmd.admin.police.remove:
+    default: op
+  SimplePolice.cmd.admin.jails.add:
+    default: op
+  SimplePolice.cmd.admin.jails.remove:
+    default: op
+  SimplePolice.cmd.jail:
+    default: op
+  SimplePolice.cmd.tp:
+    default: op
+  SimplePolice.cmd.release:
+    default: op
+  SimplePolice.cmd.chat:
+    default: op

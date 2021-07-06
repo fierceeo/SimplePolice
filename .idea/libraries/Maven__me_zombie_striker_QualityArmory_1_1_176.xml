@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: me.zombie_striker:QualityArmory:1.1.176">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/me/zombie_striker/QualityArmory/1.1.176/QualityArmory-1.1.176.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/me/zombie_striker/QualityArmory/1.1.176/QualityArmory-1.1.176-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/me/zombie_striker/QualityArmory/1.1.176/QualityArmory-1.1.176-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
