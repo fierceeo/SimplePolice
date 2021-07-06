@@ -43,31 +43,31 @@ To jail a player, make sure you are a police and attack a player with a blaze ro
 
 **Permissions**
 
-SimplePolice.cmd.admin.help:
+SimplePolice.cmd.admin.help
 
-SimplePolice.cmd.admin.reload:
+SimplePolice.cmd.admin.reload
 
-SimplePolice.cmd.admin.frisk.add:
+SimplePolice.cmd.admin.frisk.add
 
-SimplePolice.cmd.admin.frisk.remove:
+SimplePolice.cmd.admin.frisk.remove
 
-SimplePolice.cmd.admin.frisk.list:
+SimplePolice.cmd.admin.frisk.list
 
-SimplePolice.cmd.admin.police.add:
+SimplePolice.cmd.admin.police.add
 
-SimplePolice.cmd.admin.police.remove:
+SimplePolice.cmd.admin.police.remove
 
-SimplePolice.cmd.admin.jails.add:
+SimplePolice.cmd.admin.jails.add
 
-SimplePolice.cmd.admin.jails.remove:
+SimplePolice.cmd.admin.jails.remove
 
-SimplePolice.cmd.jail:
+SimplePolice.cmd.jail
 
-SimplePolice.cmd.tp:
+SimplePolice.cmd.tp
 
-SimplePolice.cmd.release:
+SimplePolice.cmd.release
 
-SimplePolice.cmd.chat:
+SimplePolice.cmd.chat
 
 **Commands**
 
