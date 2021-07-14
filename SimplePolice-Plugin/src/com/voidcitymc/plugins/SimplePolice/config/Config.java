@@ -42,7 +42,7 @@ public class Config {
         if (!configExists()) {
             try {
                 (new File(configFileFullPath)).createNewFile();
-                defaultConfigProperties.store(new FileOutputStream(configFileFullPath), "Simple Police\nDiscord Support: https://discord.gg/rxzHRHcC7W\nInformation explaining the config values can be found here: (insert github config link)");
+                defaultConfigProperties.store(new FileOutputStream(configFileFullPath), "Simple Police\nDiscord Support: https://discord.gg/rxzHRHcC7W\nInformation explaining the config values can be found here: https://github.com/fierceeo/SimplePolice/tree/master/SimplePolice-Plugin/src/main/resources");
             } catch (IOException e) {
                 System.out.println(ChatColor.RED+"Simple Police is unable to create a config file - Critical Error!");
             }
