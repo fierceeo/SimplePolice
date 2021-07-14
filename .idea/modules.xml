@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/SimplePolice.iml" filepath="$PROJECT_DIR$/SimplePolice.iml" />
       <module fileurl="file://$PROJECT_DIR$/SimplePolice-API/SimplePolice-API.iml" filepath="$PROJECT_DIR$/SimplePolice-API/SimplePolice-API.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SimplePolice-LegacyUtils/SimplePolice-LegacyUtils.iml" filepath="$PROJECT_DIR$/SimplePolice-LegacyUtils/SimplePolice-LegacyUtils.iml" />
       <module fileurl="file://$PROJECT_DIR$/SimplePolice-Plugin/SimplePolice-Plugin.iml" filepath="$PROJECT_DIR$/SimplePolice-Plugin/SimplePolice-Plugin.iml" />
     </modules>
   </component>

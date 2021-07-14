@@ -3,8 +3,10 @@ package com.voidcitymc.plugins.SimplePolice.gui;
 import com.voidcitymc.plugins.SimplePolice.config.ConfigValues;
 import com.voidcitymc.plugins.SimplePolice.events.Jail;
 import com.voidcitymc.plugins.SimplePolice.Worker;
+import com.voidcitymc.plugins.SimplePolice.legacyUtils.LegacyUtils;
 import com.voidcitymc.plugins.SimplePolice.messages.Messages;
 import org.bukkit.Bukkit;
+import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -82,15 +84,33 @@ public class JailGUI implements Listener {
     public Inventory createGUI(Player player) {
         Inventory guiInventory = Bukkit.createInventory(null, 9, guiName);
 
-        Material[] guiMaterialList = new Material[]
-                {Material.RED_TERRACOTTA, Material.ORANGE_TERRACOTTA,
-                        Material.YELLOW_TERRACOTTA, Material.LIME_TERRACOTTA,
-                        Material.LIGHT_BLUE_TERRACOTTA};
+        String[] versionArray = Bukkit.getBukkitVersion().split("-")[0].split("\\.");
+        boolean legacyApi = Integer.parseInt(versionArray[0]) == 1 && Integer.parseInt(versionArray[1]) < 13;
 
-        double[] jailGUITimes = ConfigValues.jailGUITimes;
-        for (int i = 2; i < 7; i++) {
-            guiInventory.setItem(i, Worker.createGuiItem(guiMaterialList[i-2], Messages.getMessage("JailGUIBlock", String.valueOf(jailGUITimes[i-2]))));
+        if (legacyApi) {
+            ItemStack[] guiMaterialList = new ItemStack[]{
+                    LegacyUtils.getLegacyStainedClay(DyeColor.RED),
+                    LegacyUtils.getLegacyStainedClay(DyeColor.ORANGE),
+                    LegacyUtils.getLegacyStainedClay(DyeColor.YELLOW),
+                    LegacyUtils.getLegacyStainedClay(DyeColor.LIME),
+                    LegacyUtils.getLegacyStainedClay(DyeColor.LIGHT_BLUE)};
+            double[] jailGUITimes = ConfigValues.jailGUITimes;
+            for (int i = 2; i < 7; i++) {
+                guiInventory.setItem(i, Worker.createGuiItem(guiMaterialList[i-2], Messages.getMessage("JailGUIBlock", String.valueOf(jailGUITimes[i-2]))));
+            }
+        } else {
+            Material[] guiMaterialList = new Material[]{
+                    Material.RED_TERRACOTTA, Material.ORANGE_TERRACOTTA,
+                    Material.YELLOW_TERRACOTTA, Material.LIME_TERRACOTTA,
+                    Material.LIGHT_BLUE_TERRACOTTA};
+
+            double[] jailGUITimes = ConfigValues.jailGUITimes;
+            for (int i = 2; i < 7; i++) {
+                guiInventory.setItem(i, Worker.createGuiItem(guiMaterialList[i-2], Messages.getMessage("JailGUIBlock", String.valueOf(jailGUITimes[i-2]))));
+            }
         }
+
+
 
         return guiInventory;
     }

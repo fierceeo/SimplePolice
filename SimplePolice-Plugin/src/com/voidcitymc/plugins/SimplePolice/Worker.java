@@ -141,6 +141,17 @@ public class Worker {
         return item;
     }
 
+    public static ItemStack createGuiItem(final ItemStack item, final String name, final String... lore) {
+        final ItemMeta meta = item.getItemMeta();
+
+        if (meta != null) {
+            meta.setDisplayName(name);
+            meta.setLore(Arrays.asList(lore));
+            item.setItemMeta(meta);
+        }
+        return item;
+    }
+
     public static void addJail(String jailName, Location location) {
         BTreeMap<String, String> jailLocationsDB = Database.simplePoliceDB.treeMap("jailLocations").keySerializer(Serializer.STRING).valueSerializer(Serializer.STRING).createOrOpen();
         com.voidcitymc.plugins.SimplePolice.config.configvalues.Location storageLocation = new com.voidcitymc.plugins.SimplePolice.config.configvalues.Location(location);

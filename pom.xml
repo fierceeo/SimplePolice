@@ -11,6 +11,7 @@
 	<modules>
 		<module>SimplePolice-Plugin</module>
 		<module>SimplePolice-API</module>
+		<module>SimplePolice-LegacyUtils</module>
 	</modules>
 
 
@@ -39,13 +40,6 @@
 	</repositories>
 
 	<dependencies>
-		<dependency>
-			<groupId>org.spigotmc</groupId>
-			<artifactId>spigot-api</artifactId>
-			<version>1.17-R0.1-SNAPSHOT</version>
-			<scope>provided</scope>
-		</dependency>
-
 		<dependency>
 			<groupId>com.github.MilkBowl</groupId>
 			<artifactId>VaultAPI</artifactId>

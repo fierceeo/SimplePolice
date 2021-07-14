@@ -22,6 +22,12 @@
 		</dependency>
 
 		<dependency>
+			<groupId>com.voidcity.SimplePolice-LegacyUtils</groupId>
+			<artifactId>SimplePolice-LegacyUtils</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
 			<groupId>com.sk89q.worldedit</groupId>
 			<artifactId>worldedit-bukkit</artifactId>
 			<version>7.2.5</version>
@@ -46,6 +52,13 @@
 			<groupId>org.mapdb</groupId>
 			<artifactId>mapdb</artifactId>
 			<version>3.0.8</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.spigotmc</groupId>
+			<artifactId>spigot-api</artifactId>
+			<version>1.17-R0.1-SNAPSHOT</version>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 

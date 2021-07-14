@@ -9,8 +9,8 @@
 		<version>5.0</version>
 	</parent>
 
-	<groupId>com.voidcity.SimplePolice-API</groupId>
-	<artifactId>SimplePolice-API</artifactId>
+	<groupId>com.voidcity.SimplePolice-LegacyUtils</groupId>
+	<artifactId>SimplePolice-LegacyUtils</artifactId>
 	<version>5.0</version>
 	<packaging>jar</packaging>
 
@@ -18,7 +18,7 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.17-R0.1-SNAPSHOT</version>
+            <version>1.8.8-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
@@ -33,16 +33,6 @@
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.3.0</version>
-                <configuration>
-                    <doclint>none</doclint>
-                    <source>1.8</source>
-                    <reportOutputDirectory>../docs/</reportOutputDirectory>
                 </configuration>
             </plugin>
         </plugins>
