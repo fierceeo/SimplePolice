@@ -16,7 +16,10 @@ public class EventManager {
     private static ArrayList<PlayerUnjailEvent> playerUnjailEvents = new ArrayList<>();
     private static ArrayList<PoliceTeleportEvent> policeTeleportEvents = new ArrayList<>();
 
+    public static boolean usingListenerApi = false;
+
     public static void registerEvent(GenericSimplePoliceEvent event) {
+        usingListenerApi = true;
         if (event instanceof PlayerArrestEvent) {
             playerArrestEvents.add((PlayerArrestEvent) event);
         } else if (event instanceof Player911Event) {

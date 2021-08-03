@@ -20,6 +20,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class SimplePolice extends JavaPlugin implements SimplePoliceAPI {
 
+    private static Metrics metrics;
+
     @Override
     public void onEnable() {
         Config config = new Config("SimplePolice.properties");
@@ -32,13 +34,14 @@ public class SimplePolice extends JavaPlugin implements SimplePoliceAPI {
         Database.loadDataIntoMemory();
 
         (new UpdateChecker(this)).checkForUpdate();
-        new Metrics(this, 6814);
+        metrics = new Metrics(this, 6814);
         registerEvents();
         System.out.println("Simple Police has been enabled!");
     }
 
     @Override
     public void onDisable() {
+        metrics.addCustomChart(new Metrics.SimplePie("use_listener_api", () -> String.valueOf(EventManager.usingListenerApi)));
         System.out.println("Simple Police has been disabled");
         System.out.println("-- Saving Data --");
         Database.close();
