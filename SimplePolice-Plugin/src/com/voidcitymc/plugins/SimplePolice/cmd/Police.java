@@ -23,6 +23,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.UUID;
 
 public class Police implements Listener, CommandExecutor {
 
@@ -153,7 +154,11 @@ public class Police implements Listener, CommandExecutor {
                 break;
             case "release":
                 if (sender.hasPermission("SimplePolice.cmd.release") || isPolice) {
-                    releasePlayer(sender, cmdArguments[1]);
+                    if (cmdArguments[1].equalsIgnoreCase("all")) {
+                        releaseAll(sender);
+                    } else {
+                        releasePlayer(sender, cmdArguments[1]);
+                    }
                 } else {
                     invalidCommand(sender);
                 }
@@ -383,6 +388,16 @@ public class Police implements Listener, CommandExecutor {
         } else {
             sender.sendMessage(Messages.getMessage("ErrorUnjailingPlayerOffline", player));
         }
+    }
+
+    private void releaseAll(CommandSender sender) {
+        ArrayList<UUID> jailedPlayers = Jail.jailedPlayers();
+        jailedPlayers.forEach(player -> {
+            if (Bukkit.getPlayer(player) != null && Jail.isJailed(player)) {
+                Jail.unjailPlayer(player, true);
+            }
+        });
+        sender.sendMessage(Messages.getMessage("UnjailAllOnlinePlayers"));
     }
 
     private void policeChatOn(Player player) {
