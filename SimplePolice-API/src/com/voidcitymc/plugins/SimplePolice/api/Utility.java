@@ -27,7 +27,17 @@ public interface Utility {
 
     void removeJail(String jailName);
 
+    Location getJailLocation(String jailName);
+
     ArrayList<String> jailList();
+
+    ArrayList<UUID> jailedPlayers();
+
+    String getPlayerCurrentJail(UUID player);
+
+    double sentenceLength(UUID player);
+
+    double sentenceLengthLeft(UUID player);
 
     void addPolice(String uuid);
 

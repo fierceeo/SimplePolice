@@ -1,6 +1,7 @@
 package com.voidcitymc.plugins.SimplePolice.apiInternals;
 
 import com.voidcitymc.plugins.SimplePolice.Worker;
+import com.voidcitymc.plugins.SimplePolice.events.Jail;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -40,8 +41,28 @@ public class Utility implements com.voidcitymc.plugins.SimplePolice.api.Utility 
                 Worker.removeJail(jailName);
         }
 
+        public Location getJailLocation(String jailName) {
+                return Jail.getJailLocation(jailName);
+        }
+
         public ArrayList<String> jailList() {
                 return Worker.jailList();
+        }
+
+        public ArrayList<UUID> jailedPlayers() {
+                return Jail.jailedPlayers();
+        }
+
+        public String getPlayerCurrentJail(UUID player) {
+                return Jail.getPlayerCurrentJail(player);
+        }
+
+        public double sentenceLength(UUID player) {
+                return Jail.getSentenceLength(player);
+        }
+
+        public double sentenceLengthLeft(UUID player) {
+                return Jail.timeLeft(player);
         }
 
         public void addPolice(String uuid) {

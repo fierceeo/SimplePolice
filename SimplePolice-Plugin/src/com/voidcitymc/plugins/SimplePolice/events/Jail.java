@@ -14,6 +14,8 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+
 //TODO: review code
 public class Jail implements Listener {
     private static final HashMap<String, Double> sentenceLength = new HashMap<>();
@@ -35,6 +37,10 @@ public class Jail implements Listener {
         return cooldowns.getOrDefault(player.toString(), l);
     }
 
+    public static ArrayList<UUID> jailedPlayers() {
+        return (ArrayList<UUID>) playerJailMap.keySet().stream().map(string -> UUID.fromString(string)).collect(Collectors.toList());
+    }
+
     private static boolean isJailTimeOver(UUID player) {
         return TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - getCooldown(player)) >= sentenceLength.get(player.toString());
     }
@@ -52,6 +58,10 @@ public class Jail implements Listener {
             timeLeftText = Math.round(((double) seconds) / 60) + " " + Messages.getMessage("JailTimeUnitForTimeLeftOver60");
         }
         return timeLeftText;
+    }
+
+    public static String getPlayerCurrentJail(UUID player) {
+        return playerJailMap.get(player.toString());
     }
 
     public static double getSentenceLength(UUID player) {
