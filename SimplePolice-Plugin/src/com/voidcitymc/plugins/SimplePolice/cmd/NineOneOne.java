@@ -43,7 +43,7 @@ public class NineOneOne implements CommandExecutor {
                     if (currentPolicePlayer != null) {
                         if (ConfigValues.showCords911) {
                             Location playerLocation = player.getLocation();
-                            currentPolicePlayer.sendMessage(Messages.getMessage("NineOneOneMsgPoliceCords", playerLocation.getBlockX() + ", " + playerLocation.getBlockY() + ", " + playerLocation.getBlockZ(), playerLocation.getWorld().getName(), nineOneOneMessage.toString()));
+                            currentPolicePlayer.sendMessage(Messages.getMessage("NineOneOneMsgPoliceCords", player.getName(), playerLocation.getBlockX() + ", " + playerLocation.getBlockY() + ", " + playerLocation.getBlockZ(), playerLocation.getWorld().getName(), nineOneOneMessage.toString()));
                         } else {
                             currentPolicePlayer.sendMessage(Messages.getMessage("NineOneOneMsgPolice", player.getName(), nineOneOneMessage.toString()));
                         }
