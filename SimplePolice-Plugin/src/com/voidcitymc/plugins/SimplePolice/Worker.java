@@ -237,9 +237,12 @@ public class Worker {
         if (itemStack != null) {
             ItemStack itemStackCorrectedAmount = itemStack.clone();
             itemStackCorrectedAmount.setAmount(1);
-            if (Bukkit.getServer().getPluginManager().getPlugin("QualityArmory") != null && QualityArmory.isCustomItem(itemStackCorrectedAmount)) {
+            if (Bukkit.getServer().getPluginManager().getPlugin("QualityArmory") != null && (QualityArmory.isGun(itemStack) || QualityArmory.isCustomItem(itemStack))) {
                 NavigableSet<String> contrabandQAItemsDB = Database.simplePoliceDB.treeSet("contrabandQAItems").serializer(Serializer.STRING).createOrOpen();
-                String qaItemName = QualityArmory.getCustomItem(itemStackCorrectedAmount).getName();
+                String qaItemName = QualityArmory.getCustomItem(itemStack).getName();
+                if (qaItemName == null) {
+                    qaItemName = QualityArmory.getGun(itemStack).getName();
+                }
                 contrabandQAItemsDB.add(qaItemName);
                 Database.contrabandQAItems.add(qaItemName);
             } else {
@@ -262,9 +265,12 @@ public class Worker {
         if (itemStack != null) {
             ItemStack itemStackCorrectedAmount = itemStack.clone();
             itemStackCorrectedAmount.setAmount(1);
-            if (Bukkit.getServer().getPluginManager().getPlugin("QualityArmory") != null && QualityArmory.isCustomItem(itemStackCorrectedAmount)) {
+            if (Bukkit.getServer().getPluginManager().getPlugin("QualityArmory") != null && (QualityArmory.isGun(itemStack) || QualityArmory.isCustomItem(itemStack))) {
                 NavigableSet<String> contrabandQAItemsDB = Database.simplePoliceDB.treeSet("contrabandQAItems").serializer(Serializer.STRING).createOrOpen();
-                String qaItemName = QualityArmory.getCustomItem(itemStackCorrectedAmount).getName();
+                String qaItemName = QualityArmory.getCustomItem(itemStack).getName();
+                if (qaItemName == null) {
+                    qaItemName = QualityArmory.getGun(itemStack).getName();
+                }
                 contrabandQAItemsDB.remove(qaItemName);
                 Database.contrabandQAItems.remove(qaItemName);
             } else {
@@ -287,11 +293,16 @@ public class Worker {
         if (itemStack != null) {
             ItemStack itemStackCorrectedAmount = itemStack.clone();
             itemStackCorrectedAmount.setAmount(1);
-            if (Bukkit.getServer().getPluginManager().getPlugin("QualityArmory") != null && QualityArmory.isCustomItem(itemStackCorrectedAmount)) {
-                if (ConfigValues.markAllGunsAsContraband) {
+            if (Bukkit.getServer().getPluginManager().getPlugin("QualityArmory") != null) {
+                if (QualityArmory.isGun(itemStack) && ConfigValues.markAllGunsAsContraband) {
                     return true;
-                } else {
-                    return Database.contrabandQAItems.contains(QualityArmory.getCustomItem(itemStackCorrectedAmount).getName());
+                }
+                if ((QualityArmory.isGun(itemStack) || QualityArmory.isCustomItem(itemStack))) {
+                    boolean isContraband = Database.contrabandQAItems.contains(QualityArmory.getCustomItem(itemStackCorrectedAmount).getName());
+                    if (!isContraband) {
+                        isContraband = Database.contrabandQAItems.contains(QualityArmory.getGun(itemStackCorrectedAmount).getName());
+                    }
+                    return isContraband;
                 }
             }
             return Database.contrabandItems.contains(itemStackCorrectedAmount);
