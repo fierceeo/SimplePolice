@@ -8,11 +8,7 @@ import com.voidcitymc.plugins.SimplePolice.config.ConfigValues;
 import com.voidcitymc.plugins.SimplePolice.config.configvalues.PayPoliceOnArrestMode;
 import com.voidcitymc.plugins.SimplePolice.config.configvalues.TakeMoneyOnArrestMode;
 import com.voidcitymc.plugins.SimplePolice.messages.Messages;
-import me.zombie_striker.customitemmanager.CustomBaseObject;
-import me.zombie_striker.qg.ammo.Ammo;
 import me.zombie_striker.qg.api.QualityArmory;
-import me.zombie_striker.qg.armor.ArmorObject;
-import me.zombie_striker.qg.guns.Gun;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -20,7 +16,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.plugin.RegisteredServiceProvider;
 import org.mapdb.BTreeMap;
 import org.mapdb.Serializer;
 
@@ -29,17 +24,17 @@ import java.util.*;
 
 
 public class Worker {
-    private static Economy setupEconomy() {
-        RegisteredServiceProvider<Economy> rsp = Bukkit.getServer().getServicesManager().getRegistration(Economy.class);
-        if (rsp != null) {
-            return rsp.getProvider();
-        }
-        return null;
+
+    public static boolean vaultEnabled() {
+        return SimplePolice.vaultEnabled;
+    }
+    public static Economy getEconomy() {
+        return SimplePolice.economy;
     }
 
     public static void payPoliceOnArrest(Player police, Player criminal) {
-        if (ConfigValues.payPoliceOnArrest && Bukkit.getServer().getPluginManager().getPlugin("Vault") != null) {
-            Economy economy = setupEconomy();
+        if (ConfigValues.payPoliceOnArrest && vaultEnabled()) {
+            Economy economy = getEconomy();
             if (economy != null) {
                 if (ConfigValues.payPoliceOnArrestMode == PayPoliceOnArrestMode.server) {
                     economy.depositPlayer(police, ConfigValues.payPoliceOnArrestServer);
@@ -62,8 +57,8 @@ public class Worker {
     }
 
     public static void takeMoneyOnArrest(Player criminal) {
-        if (ConfigValues.takeMoneyOnArrest && Bukkit.getServer().getPluginManager().getPlugin("Vault") != null) {
-            Economy economy = setupEconomy();
+        if (ConfigValues.takeMoneyOnArrest && vaultEnabled()) {
+            Economy economy = getEconomy();
             if (economy != null) {
                 if (ConfigValues.takeMoneyOnArrestMode == TakeMoneyOnArrestMode.percentage) {
                     double moneyLost = economy.getBalance(criminal) * (ConfigValues.takeMoneyOnArrestPercentage / 100);

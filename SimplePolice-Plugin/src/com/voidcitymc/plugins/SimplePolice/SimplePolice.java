@@ -16,14 +16,21 @@ import com.voidcitymc.plugins.SimplePolice.frisk.Frisk;
 import com.voidcitymc.plugins.SimplePolice.gui.JailGUI;
 import com.voidcitymc.plugins.SimplePolice.messages.Messages;
 import com.voidcitymc.plugins.SimplePolice.metrics.Metrics;
+import net.milkbowl.vault.economy.Economy;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class SimplePolice extends JavaPlugin implements SimplePoliceAPI {
 
     private static Metrics metrics;
 
+    protected static Economy economy = null;
+
+    protected static boolean vaultEnabled = false;
+
     @Override
     public void onEnable() {
+        vaultEnabled = setupEconomy();
         Config config = new Config("SimplePolice.properties");
         config.setupConfig();
         ConfigValues.initialize(config);
@@ -67,5 +74,18 @@ public class SimplePolice extends JavaPlugin implements SimplePoliceAPI {
     @Override
     public Utility getUtilityInstance() {
         return new com.voidcitymc.plugins.SimplePolice.apiInternals.Utility();
+    }
+
+
+    private boolean setupEconomy() {
+        if (getServer().getPluginManager().getPlugin("Vault") == null) {
+            return false;
+        }
+        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
+        if (rsp == null) {
+            return false;
+        }
+        economy = rsp.getProvider();
+        return true;
     }
 }
