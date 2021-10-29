@@ -50,8 +50,7 @@ public class UpdateChecker {
                         connection.setRequestMethod("GET");
                         spigotPluginVersion = new BufferedReader(new InputStreamReader(connection.getInputStream())).readLine();
                     } catch (final IOException e) {
-                        Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', ERR_MSG));
-                        e.printStackTrace();
+                        Bukkit.getServer().getConsoleSender().sendMessage("Unable to check for a Simple Police update: please check your internet connection and firewall");
                         cancel();
                         return;
                     }
