@@ -11,7 +11,7 @@
 
 	<groupId>com.voidcity.SimplePolice-LegacyUtils</groupId>
 	<artifactId>SimplePolice-LegacyUtils</artifactId>
-	<version>5.2</version>
+	<version>5.2.1</version>
 	<packaging>jar</packaging>
 
     <dependencies>
