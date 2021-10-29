@@ -6,7 +6,7 @@
 	<parent>
 		<artifactId>SimplePolice</artifactId>
 		<groupId>com.voidcity.SimplePolice-Project</groupId>
-		<version>5.2</version>
+		<version>5.2.1</version>
 	</parent>
 
 	<groupId>com.voidcity.SimplePolice-API</groupId>
