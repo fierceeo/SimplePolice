@@ -6,7 +6,6 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="SimplePolice-LegacyUtils" />
         <module name="SimplePolice-API" />
         <module name="SimplePolice-Plugin" />
       </profile>
@@ -14,7 +13,7 @@
     <bytecodeTargetLevel>
       <module name="SimplePolice" target="1.5" />
       <module name="SimplePolice-API" target="1.8" />
-      <module name="SimplePolice-LegacyUtils" target="1.8" />
+      <module name="SimplePolice-LegacyUtils" target="1.5" />
       <module name="SimplePolice-Plugin" target="1.8" />
     </bytecodeTargetLevel>
   </component>

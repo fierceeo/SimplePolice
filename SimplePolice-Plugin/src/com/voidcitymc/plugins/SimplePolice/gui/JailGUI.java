@@ -3,7 +3,7 @@ package com.voidcitymc.plugins.SimplePolice.gui;
 import com.voidcitymc.plugins.SimplePolice.config.ConfigValues;
 import com.voidcitymc.plugins.SimplePolice.events.Jail;
 import com.voidcitymc.plugins.SimplePolice.Worker;
-import com.voidcitymc.plugins.SimplePolice.legacyUtils.LegacyUtils;
+import com.voidcitymc.plugins.SimplePolice.LegacyUtils;
 import com.voidcitymc.plugins.SimplePolice.messages.Messages;
 import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;

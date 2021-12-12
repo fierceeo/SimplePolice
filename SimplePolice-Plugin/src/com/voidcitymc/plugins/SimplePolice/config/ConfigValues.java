@@ -32,27 +32,27 @@ public class ConfigValues {
 
 
     public static void initialize(Config config) {
-        maxPoliceTpDistance = Integer.parseInt(config.getConfigProperty("MaxPoliceTpDistance"));
-        payPoliceOnArrest = Boolean.parseBoolean(config.getConfigProperty("PayPoliceOnArrest"));
-        payPoliceOnArrestMode = PayPoliceOnArrestMode.valueOf(config.getConfigProperty("PayPoliceOnArrestMode").toLowerCase());
-        payPoliceOnArrestServer = Integer.parseInt(config.getConfigProperty("PayPoliceOnArrestServer"));
-        payPoliceOnArrestPlayerPercentage = Integer.parseInt(config.getConfigProperty("PayPoliceOnArrestPlayerPercentage"));
-        payPoliceOnArrestPlayerFixed = Integer.parseInt(config.getConfigProperty("PayPoliceOnArrestPlayerFixed"));
-        takeMoneyOnArrest = Boolean.parseBoolean(config.getConfigProperty("TakeMoneyOnArrest"));
-        takeMoneyOnArrestMode = TakeMoneyOnArrestMode.valueOf(config.getConfigProperty("TakeMoneyOnArrestMode").toLowerCase());
-        takeMoneyOnArrestPercentage = Integer.parseInt(config.getConfigProperty("TakeMoneyOnArrestPercentage"));
-        takeMoneyOnArrestFixed = Integer.parseInt(config.getConfigProperty("TakeMoneyOnArrestFixed"));
-        safeAreaEnabled = Boolean.parseBoolean(config.getConfigProperty("SafeAreaEnabled"));
-        safeAreas = config.getConfigProperty("SafeAreas").toLowerCase().split(",");
-        batonMaterialType = Material.getMaterial(config.getConfigProperty("BatonMaterialType").toUpperCase().replace(' ', '_'));
-        friskingEnabled = Boolean.parseBoolean(config.getConfigProperty("FriskingEnabled"));
-        percentOfFindingContraband = Integer.parseInt(config.getConfigProperty("PercentOfFindingContraband"));
-        friskStickMaterialType = Material.getMaterial(config.getConfigProperty("FriskStickMaterialType").toUpperCase().replace(' ', '_'));
-        markAllGunsAsContraband = Boolean.parseBoolean(config.getConfigProperty("MarkAllGunsAsContraband"));
-        friskCooldown = Integer.parseInt(config.getConfigProperty("FriskCooldown"));
-        showCords911 = Boolean.parseBoolean(config.getConfigProperty("ShowCords911"));
-        usePlayerDisplayNameInPoliceChat = Boolean.parseBoolean(config.getConfigProperty("UsePlayerDisplayNameInPoliceChat"));
-        jailGUITimes = Arrays.stream(config.getConfigProperty("JailGUITimes").split(",")).mapToDouble(Double::parseDouble).toArray();
+        maxPoliceTpDistance = Integer.parseInt(config.getProperty("MaxPoliceTpDistance"));
+        payPoliceOnArrest = Boolean.parseBoolean(config.getProperty("PayPoliceOnArrest"));
+        payPoliceOnArrestMode = PayPoliceOnArrestMode.valueOf(config.getProperty("PayPoliceOnArrestMode").toLowerCase());
+        payPoliceOnArrestServer = Integer.parseInt(config.getProperty("PayPoliceOnArrestServer"));
+        payPoliceOnArrestPlayerPercentage = Integer.parseInt(config.getProperty("PayPoliceOnArrestPlayerPercentage"));
+        payPoliceOnArrestPlayerFixed = Integer.parseInt(config.getProperty("PayPoliceOnArrestPlayerFixed"));
+        takeMoneyOnArrest = Boolean.parseBoolean(config.getProperty("TakeMoneyOnArrest"));
+        takeMoneyOnArrestMode = TakeMoneyOnArrestMode.valueOf(config.getProperty("TakeMoneyOnArrestMode").toLowerCase());
+        takeMoneyOnArrestPercentage = Integer.parseInt(config.getProperty("TakeMoneyOnArrestPercentage"));
+        takeMoneyOnArrestFixed = Integer.parseInt(config.getProperty("TakeMoneyOnArrestFixed"));
+        safeAreaEnabled = Boolean.parseBoolean(config.getProperty("SafeAreaEnabled"));
+        safeAreas = config.getProperty("SafeAreas").toLowerCase().split(",");
+        batonMaterialType = Material.getMaterial(config.getProperty("BatonMaterialType").toUpperCase().replace(' ', '_'));
+        friskingEnabled = Boolean.parseBoolean(config.getProperty("FriskingEnabled"));
+        percentOfFindingContraband = Integer.parseInt(config.getProperty("PercentOfFindingContraband"));
+        friskStickMaterialType = Material.getMaterial(config.getProperty("FriskStickMaterialType").toUpperCase().replace(' ', '_'));
+        markAllGunsAsContraband = Boolean.parseBoolean(config.getProperty("MarkAllGunsAsContraband"));
+        friskCooldown = Integer.parseInt(config.getProperty("FriskCooldown"));
+        showCords911 = Boolean.parseBoolean(config.getProperty("ShowCords911"));
+        usePlayerDisplayNameInPoliceChat = Boolean.parseBoolean(config.getProperty("UsePlayerDisplayNameInPoliceChat"));
+        jailGUITimes = Arrays.stream(config.getProperty("JailGUITimes").split(",")).mapToDouble(Double::parseDouble).toArray();
     }
 
 }

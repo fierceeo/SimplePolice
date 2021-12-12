@@ -2,13 +2,6 @@ package com.voidcitymc.plugins.SimplePolice.messages;
 
 import com.voidcitymc.plugins.SimplePolice.config.Config;
 import net.md_5.bungee.api.ChatColor;
-import org.bukkit.Bukkit;
-
-import java.io.*;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
 
 public class Messages {
 
@@ -18,10 +11,10 @@ public class Messages {
     }
 
     public static String getMessage(String property) {
-        return ChatColor.translateAlternateColorCodes('&', messagesConfig.getConfigProperty(property));
+        return ChatColor.translateAlternateColorCodes('&', messagesConfig.getProperty(property));
     }
     public static String getMessage(String property, String... textToReplace) {
-        String message = messagesConfig.getConfigProperty(property);
+        String message = messagesConfig.getProperty(property);
         for (int i = 0; i < textToReplace.length; i++) {
             message = message.replaceFirst("&0", textToReplace[i]);
         }
