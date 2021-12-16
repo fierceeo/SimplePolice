@@ -1,5 +1,6 @@
 package com.voidcitymc.plugins.SimplePolice.config;
 
+import com.voidcitymc.plugins.SimplePolice.SimplePolice;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 
@@ -10,7 +11,6 @@ import java.util.Properties;
 public class Config {
     private final String fileName;
     private final String fileFullPath;
-    private final String pluginFolderPath = "."+File.separator+"plugins"+File.separator+"SimplePolice"+File.separator;
 
     private final String headerComment = "Simple Police\nDiscord Support: https://discord.gg/rxzHRHcC7W\nInformation explaining the config values can be found here: https://github.com/fierceeo/SimplePolice/tree/master/SimplePolice-Plugin/src/main/resources";
 
@@ -18,16 +18,16 @@ public class Config {
 
     public Config(String fileName) {
         this.fileName = fileName;
-        fileFullPath = pluginFolderPath + fileName;
+        fileFullPath = SimplePolice.getPluginFolderPath() + File.separator + fileName;
     }
 
     public void setupConfig() {
-        (new File(pluginFolderPath)).mkdirs();
+        (new File(SimplePolice.getPluginFolderPath())).mkdirs();
 
-        InputStream defaultConfig = Config.class.getResourceAsStream("/" + fileName);
         Properties defaultFileProperties = new Properties();
+        fileProperties = new Properties();
 
-        if (!load(defaultFileProperties, defaultConfig)) {
+        if (!load(defaultFileProperties, "/" + fileName, true)) {
             System.out.println(ChatColor.RED+"Simple Police is unable to load file from jar: "+ fileName +" - Stopping Server!");
             Bukkit.shutdown();
             return;
@@ -48,7 +48,7 @@ public class Config {
             return;
         }
 
-        if (!load(fileProperties, fileFullPath)) {
+        if (!load(fileProperties, fileFullPath, false)) {
             System.out.println(ChatColor.RED+"Simple Police is unable to load file from filesystem: "+ fileFullPath +" - Stopping Server!");
             Bukkit.shutdown();
             return;
@@ -92,32 +92,30 @@ public class Config {
 
     private boolean save(Properties propertiesFile, String path, String comments) {
         try {
-            return save(propertiesFile, new FileOutputStream(path), comments);
-        } catch (FileNotFoundException e) {
-            return false;
-        }
-    }
-
-    private boolean save(Properties propertiesFile, OutputStream fileOutputStream, String comments) {
-        try {
-            propertiesFile.store(new OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8), comments);
+            FileOutputStream fileStream = new FileOutputStream(path);
+            propertiesFile.store(new OutputStreamWriter(fileStream, StandardCharsets.UTF_8), comments);
+            fileStream.close();
         } catch (IOException e) {
             return false;
         }
         return true;
     }
 
-    private boolean load(Properties propertiesFile, String path) {
-        try {
-            return load(propertiesFile, new FileInputStream(path));
-        } catch (FileNotFoundException e) {
-            return false;
+    private boolean load(Properties propertiesFile, String path, boolean fileInJar) {
+        InputStream fileStream;
+        if (fileInJar) {
+            fileStream = getClass().getResourceAsStream(path);
+        } else {
+            try {
+                fileStream = new FileInputStream(path);
+            } catch (IOException ignored) {
+                return false;
+            }
         }
-    }
 
-    private boolean load(Properties propertiesFile, InputStream fileInputStream) {
         try {
-            propertiesFile.load(new InputStreamReader(fileInputStream, StandardCharsets.UTF_8));
+            propertiesFile.load(new InputStreamReader(fileStream, StandardCharsets.UTF_8));
+            fileStream.close();
         } catch (IOException e) {
             return false;
         }

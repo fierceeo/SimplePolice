@@ -1,44 +1,43 @@
 package com.voidcitymc.plugins.SimplePolice.apiInternals;
 
-import com.voidcitymc.plugins.SimplePolice.Worker;
+import com.voidcitymc.plugins.SimplePolice.DatabaseUtility;
 import com.voidcitymc.plugins.SimplePolice.events.Jail;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.UUID;
 
 public class Utility implements com.voidcitymc.plugins.SimplePolice.api.Utility {
 
         public void payPoliceOnArrest(Player police, Player criminal) {
-                Worker.payPoliceOnArrest(police, criminal);
+                com.voidcitymc.plugins.SimplePolice.Utility.payPoliceOnArrest(police, criminal);
         }
 
         public void takeMoneyOnArrest(Player criminal) {
-                Worker.takeMoneyOnArrest(criminal);
+                com.voidcitymc.plugins.SimplePolice.Utility.takeMoneyOnArrest(criminal);
         }
 
         public String leastCommonElement(String[] array) {
-                return Worker.leastCommonElement(array);
+                return com.voidcitymc.plugins.SimplePolice.Utility.leastCommonElement(array);
         }
 
         public boolean inSafeArea(Player player) {
-                return Worker.inSafeArea(player);
+                return com.voidcitymc.plugins.SimplePolice.Utility.inSafeArea(player);
         }
 
         public ItemStack createGuiItem(final Material material, final String name, final String... lore) {
-                return Worker.createGuiItem(material, name, lore);
+                return com.voidcitymc.plugins.SimplePolice.Utility.createGuiItem(material, name, lore);
         }
 
         public void addJail(String jailName, Location location) {
-                Worker.addJail(jailName, location);
+                DatabaseUtility.addJail(jailName, location);
         }
 
         public void removeJail(String jailName) {
-                Worker.removeJail(jailName);
+                DatabaseUtility.removeJail(jailName);
         }
 
         public Location getJailLocation(String jailName) {
@@ -46,7 +45,7 @@ public class Utility implements com.voidcitymc.plugins.SimplePolice.api.Utility 
         }
 
         public ArrayList<String> jailList() {
-                return Worker.jailList();
+                return com.voidcitymc.plugins.SimplePolice.Utility.jailList();
         }
 
         public ArrayList<UUID> jailedPlayers() {
@@ -66,51 +65,43 @@ public class Utility implements com.voidcitymc.plugins.SimplePolice.api.Utility 
         }
 
         public void addPolice(String uuid) {
-                Worker.addPolice(uuid);
+                DatabaseUtility.addPolice(uuid);
         }
 
         public void removePolice(String uuid) {
-                Worker.removePolice(uuid);
+                DatabaseUtility.removePolice(uuid);
         }
 
         public boolean isPolice(String uuid) {
-                return Worker.isPolice(uuid);
+                return com.voidcitymc.plugins.SimplePolice.Utility.isPolice(uuid);
         }
 
         public boolean arePoliceOnline() {
-                return Worker.arePoliceOnline();
+                return com.voidcitymc.plugins.SimplePolice.Utility.arePoliceOnline();
         }
 
         public ArrayList<UUID> onlinePoliceList() {
-                return Worker.onlinePoliceList();
-        }
-
-        public byte[] serializeItemStack(ItemStack itemStack) throws IOException {
-                return Worker.serializeItemStack(itemStack);
-        }
-
-        public ItemStack deserializeItemStack(byte[] serializedItemStack) throws IOException, ClassNotFoundException {
-                return Worker.deserializeItemStack(serializedItemStack);
+                return com.voidcitymc.plugins.SimplePolice.Utility.onlinePoliceList();
         }
 
         public void addContrabandItem(ItemStack itemStack) {
-                Worker.addContrabandItem(itemStack);
+                com.voidcitymc.plugins.SimplePolice.Utility.addContrabandItem(itemStack);
         }
 
         public void removeContrabandItem(ItemStack itemStack) {
-                Worker.removeContrabandItem(itemStack);
+                com.voidcitymc.plugins.SimplePolice.Utility.removeContrabandItem(itemStack);
         }
 
         public boolean isContraband(ItemStack itemStack) {
-                return Worker.isContraband(itemStack);
+                return com.voidcitymc.plugins.SimplePolice.Utility.isContraband(itemStack);
         }
 
         public boolean isLocationSafe(Location location) {
-                return Worker.isLocationSafe(location);
+                return com.voidcitymc.plugins.SimplePolice.Utility.isLocationSafe(location);
         }
 
         public Location policeTp(Player player, int farthestTpDistance) {
-                return Worker.policeTp(player, farthestTpDistance);
+                return com.voidcitymc.plugins.SimplePolice.Utility.policeTp(player, farthestTpDistance);
         }
 
 }

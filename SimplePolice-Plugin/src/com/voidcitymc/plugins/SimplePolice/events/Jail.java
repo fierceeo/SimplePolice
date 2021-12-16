@@ -1,7 +1,7 @@
 package com.voidcitymc.plugins.SimplePolice.events;
 
-import com.voidcitymc.plugins.SimplePolice.Database;
-import com.voidcitymc.plugins.SimplePolice.Worker;
+import com.voidcitymc.plugins.SimplePolice.DatabaseUtility;
+import com.voidcitymc.plugins.SimplePolice.Utility;
 import com.voidcitymc.plugins.SimplePolice.apiInternals.EventManager;
 import com.voidcitymc.plugins.SimplePolice.messages.Messages;
 import org.bukkit.Bukkit;
@@ -162,18 +162,20 @@ public class Jail implements Listener {
     }
 
     public static Location getJailLocation(String jailName) {
-        com.voidcitymc.plugins.SimplePolice.config.configvalues.Location location = Database.jailLocations.get(jailName);
-        if (location != null) {
-            return location.toLocation();
-        } else {
-            return null;
+        for (DatabaseUtility.JailLocation jailLocation: DatabaseUtility.getJailLocations()) {
+            if (jailLocation.getJailName().equals(jailName)) {
+                return jailLocation.getLocation();
+            }
         }
+        return null;
     }
 
     public static String getJail() {
         ArrayList<String> jailsInUse = new ArrayList<>(playerJailMap.values());
-        jailsInUse.addAll(Database.jailLocations.keySet());
-        return Worker.leastCommonElement(jailsInUse.toArray(new String[jailsInUse.size()]));
+
+        jailsInUse.addAll(Utility.jailList());
+
+        return Utility.leastCommonElement(jailsInUse.toArray(new String[0]));
     }
 
     @EventHandler
@@ -182,7 +184,7 @@ public class Jail implements Listener {
             //do not cancel death teleport
             if (!event.getTo().equals(getJailLocation(playerJailMap.get(event.getPlayer().getUniqueId().toString())))) {
                 event.setCancelled(true);
-                event.getPlayer().sendMessage(Messages.getMessage("PlayerEscapeOutOfJail", Worker.timeUnit((int) timeLeft(event.getPlayer().getUniqueId()))));
+                event.getPlayer().sendMessage(Messages.getMessage("PlayerEscapeOutOfJail", Utility.timeUnit((int) timeLeft(event.getPlayer().getUniqueId()))));
             }
         }
     }
@@ -193,7 +195,7 @@ public class Jail implements Listener {
             Player player = event.getEntity();
             player.spigot().respawn();
             Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Bukkit.getPluginManager().getPlugin("SimplePolice"), () -> {
-                player.sendMessage(Messages.getMessage("PlayerEscapeOutOfJail", Worker.timeUnit((int) timeLeft(player.getUniqueId()))));
+                player.sendMessage(Messages.getMessage("PlayerEscapeOutOfJail", Utility.timeUnit((int) timeLeft(player.getUniqueId()))));
                 player.teleport(getJailLocation(playerJailMap.get(player.getUniqueId().toString())));
             }, 1);
 

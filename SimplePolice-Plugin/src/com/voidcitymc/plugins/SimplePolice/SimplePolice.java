@@ -17,6 +17,7 @@ import com.voidcitymc.plugins.SimplePolice.gui.JailGUI;
 import com.voidcitymc.plugins.SimplePolice.messages.Messages;
 import com.voidcitymc.plugins.SimplePolice.metrics.Metrics;
 import net.milkbowl.vault.economy.Economy;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -26,19 +27,24 @@ public class SimplePolice extends JavaPlugin implements SimplePoliceAPI {
 
     protected static Economy economy = null;
 
-    protected static boolean vaultEnabled = false;
+    protected static boolean vaultInstalled = false;
+    protected static boolean qaInstalled = false;
+
+    private static String pluginFolderPath;
 
     @Override
     public void onEnable() {
-        vaultEnabled = setupEconomy();
+        pluginFolderPath = getDataFolder().getAbsolutePath();
+        vaultInstalled = setupEconomy();
+        qaInstalled = (Bukkit.getServer().getPluginManager().getPlugin("QualityArmory") != null);
         Config config = new Config("SimplePolice.properties");
         config.setupConfig();
         ConfigValues.initialize(config);
         Config messagesConfig = new Config("Messages.properties");
         messagesConfig.setupConfig();
         Messages.initialize(messagesConfig);
-        Database.iniDatabase();
-        Database.loadDataIntoMemory();
+        DatabaseUtility.iniDatabase();
+        DatabaseUtility.loadDatabase();
 
         (new UpdateChecker(this)).checkForUpdate();
         metrics = new Metrics(this, 6814);
@@ -51,8 +57,12 @@ public class SimplePolice extends JavaPlugin implements SimplePoliceAPI {
         metrics.addCustomChart(new Metrics.SimplePie("use_listener_api", () -> String.valueOf(EventManager.usingListenerApi)));
         System.out.println("Simple Police has been disabled");
         System.out.println("-- Saving Data --");
-        Database.close();
+        DatabaseUtility.save();
         System.out.println("-- All data saved! --");
+    }
+
+    public static String getPluginFolderPath() {
+        return pluginFolderPath;
     }
 
     public void registerEvents() {

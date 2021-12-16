@@ -1,68 +1,82 @@
 package com.voidcitymc.plugins.SimplePolice;
 
-import org.bukkit.inventory.ItemStack;
-import org.mapdb.BTreeMap;
-import org.mapdb.DB;
-import org.mapdb.DBMaker;
-import org.mapdb.Serializer;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.*;
+import java.io.*;
+import java.util.ArrayList;
 
 public class Database {
-    public static DB simplePoliceDB;
+    private String filePath;
+    private ArrayList<Object> data = new ArrayList<>();
 
-    public static ArrayList<ItemStack> contrabandItems;
-    public static ArrayList<String> contrabandQAItems;
-    public static ArrayList<String> policeUUIDList;
-    public static HashMap<String, com.voidcitymc.plugins.SimplePolice.config.configvalues.Location> jailLocations;
-
-    protected static void iniDatabase() {
-        (new File("."+ File.separator+"plugins"+File.separator+"SimplePolice"+File.separator+"Database"+File.separator)).mkdirs();
-        simplePoliceDB = DBMaker.fileDB("./plugins/SimplePolice/Database/SimplePolice.db").transactionEnable().make();
+    public Database(String databaseName) {
+        this.filePath = SimplePolice.getPluginFolderPath()+File.separator+"Database"+File.separator+databaseName+".json";
     }
 
-    protected static void loadDataIntoMemory() {
-        //load contraband items list
-        contrabandItems = new ArrayList<>();
-        NavigableSet<byte[]> contrabandItemsDB = Database.simplePoliceDB.treeSet("contrabandItems").serializer(Serializer.BYTE_ARRAY).createOrOpen();
-        Iterator<byte[]> contrabandItemsDBIterator = contrabandItemsDB.iterator();
-        while (contrabandItemsDBIterator.hasNext()) {
-            byte[] serializedItem = contrabandItemsDBIterator.next();
-            ItemStack item = null;
+    public boolean load() {
+        File databaseFile = new File(filePath);
+        if (!databaseFile.exists()) {
             try {
-                item = Worker.deserializeItemStack(serializedItem);
-            } catch (IOException | ClassNotFoundException ignored) {
-            }
-            if (item == null) {
-                contrabandItemsDB.remove(serializedItem);
-            } else {
-                contrabandItems.add(item);
+                if (databaseFile.createNewFile()) {
+                    save();
+                    return true;
+                } else {
+                    return false;
+                }
+            } catch (IOException e) {
+                return false;
             }
         }
 
-        //load contraband QA items list
-        contrabandQAItems = new ArrayList<>();
-        NavigableSet<String> contrabandQAItemsDB = Database.simplePoliceDB.treeSet("contrabandQAItems").serializer(Serializer.STRING).createOrOpen();
-        contrabandQAItems.addAll(contrabandQAItemsDB);
 
-        //load police list
-        policeUUIDList = new ArrayList<>();
-        NavigableSet<String> policeUUIDListDB = Database.simplePoliceDB.treeSet("policeUUIDList").serializer(Serializer.STRING).createOrOpen();
-        policeUUIDList.addAll(policeUUIDListDB);
-
-        //load jail locations list
-        jailLocations = new HashMap<>();
-        BTreeMap<String, String> jailLocationsDB = Database.simplePoliceDB.treeMap("jailLocations").keySerializer(Serializer.STRING).valueSerializer(Serializer.STRING).createOrOpen();
-        Iterator<Map.Entry<String, String>> jailLocationsDBIterator = jailLocationsDB.entryIterator();
-        while (jailLocationsDBIterator.hasNext()) {
-            Map.Entry<String, String> currentEntry = jailLocationsDBIterator.next();
-            jailLocations.put(currentEntry.getKey(), new com.voidcitymc.plugins.SimplePolice.config.configvalues.Location(currentEntry.getValue()));
+        try {
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            Reader reader = new FileReader(databaseFile);
+            data = gson.fromJson(reader, new TypeToken<ArrayList<Object>>(){}.getType());
+            reader.close();
+        } catch (IOException e) {
+            return false;
         }
+        return true;
     }
 
-    protected static void close() {
-        simplePoliceDB.close();
+    public boolean save() {
+        File databaseFile = new File(filePath);
+        if (!databaseFile.exists()) {
+            try {
+                if (!databaseFile.createNewFile()) {
+                    return false;
+                }
+            } catch (IOException e) {
+                return false;
+            }
+        }
+
+        try {
+            Writer writer = new FileWriter(databaseFile);
+            Gson gson = new GsonBuilder().create();
+            gson.toJson(data, writer);
+            writer.flush();
+            writer.close();
+
+        } catch (IOException e) {
+            return false;
+        }
+        return true;
     }
+
+    public ArrayList<Object> getData() {
+        return data;
+    }
+
+    public void add(Object item) {
+        this.data.add(item);
+    }
+
+    public void remove(Object item) {
+        this.data.remove(item);
+    }
+
 }

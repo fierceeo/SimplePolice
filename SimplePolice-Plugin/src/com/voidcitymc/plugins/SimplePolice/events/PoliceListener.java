@@ -19,10 +19,10 @@ public class PoliceListener implements Listener {
             Player attackerPlayer = (Player) event.getDamager();
             Player attackedPlayer = (Player) event.getEntity();
 
-            if (!Worker.inSafeArea(attackedPlayer)) {
-                if (Worker.isPolice(attackerPlayer.getUniqueId().toString()) && (attackerPlayer.getInventory().getItemInMainHand().getType() == ConfigValues.batonMaterialType)) {
+            if (!Utility.inSafeArea(attackedPlayer)) {
+                if (Utility.isPolice(attackerPlayer.getUniqueId().toString()) && (attackerPlayer.getInventory().getItemInMainHand().getType() == ConfigValues.batonMaterialType)) {
                     if (Bukkit.getOnlinePlayers().contains(attackedPlayer)) {
-                        if (!Database.jailLocations.isEmpty()) {
+                        if (!DatabaseUtility.getJailLocations().isEmpty()) {
                             attackedPlayer.sendMessage(Messages.getMessage("ArrestMsg"));
 
                             String jailName = Jail.getJail();
@@ -35,8 +35,8 @@ public class PoliceListener implements Listener {
                                 attackedPlayer.teleport(Jail.getJailLocation(jailName));
                             }
 
-                            Worker.payPoliceOnArrest(attackerPlayer, attackedPlayer);
-                            Worker.takeMoneyOnArrest(attackedPlayer);
+                            Utility.payPoliceOnArrest(attackerPlayer, attackedPlayer);
+                            Utility.takeMoneyOnArrest(attackedPlayer);
 
                             JailGUI.onPlayerArrest(attackerPlayer, attackedPlayer, jailName);
                             EventManager.runPlayerArrestEvent(attackerPlayer, attackedPlayer, Jail.previousLocation.get(attackedPlayer.getUniqueId().toString()));

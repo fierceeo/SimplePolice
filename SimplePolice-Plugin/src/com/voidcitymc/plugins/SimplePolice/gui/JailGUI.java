@@ -2,7 +2,7 @@ package com.voidcitymc.plugins.SimplePolice.gui;
 
 import com.voidcitymc.plugins.SimplePolice.config.ConfigValues;
 import com.voidcitymc.plugins.SimplePolice.events.Jail;
-import com.voidcitymc.plugins.SimplePolice.Worker;
+import com.voidcitymc.plugins.SimplePolice.Utility;
 import com.voidcitymc.plugins.SimplePolice.LegacyUtils;
 import com.voidcitymc.plugins.SimplePolice.messages.Messages;
 import org.bukkit.Bukkit;
@@ -47,7 +47,7 @@ public class JailGUI implements Listener {
                     if (!Jail.isJailed(jailedPlayer)) {
                         bukkitJailedPlayer.sendMessage(Messages.getMessage("JailTimeMSG", String.valueOf(jailTime)));
                     } else {
-                        bukkitJailedPlayer.sendMessage(Messages.getMessage("JailTimeChange", Worker.timeUnit((int) jailTime)));
+                        bukkitJailedPlayer.sendMessage(Messages.getMessage("JailTimeChange", Utility.timeUnit((int) jailTime)));
                     }
                 }
 
@@ -96,7 +96,7 @@ public class JailGUI implements Listener {
                     LegacyUtils.getLegacyStainedClay(DyeColor.LIGHT_BLUE)};
             double[] jailGUITimes = ConfigValues.jailGUITimes;
             for (int i = 2; i < 7; i++) {
-                guiInventory.setItem(i, Worker.createGuiItem(guiMaterialList[i-2], Messages.getMessage("JailGUIBlock", String.valueOf(jailGUITimes[i-2]))));
+                guiInventory.setItem(i, Utility.createGuiItem(guiMaterialList[i-2], Messages.getMessage("JailGUIBlock", String.valueOf(jailGUITimes[i-2]))));
             }
         } else {
             Material[] guiMaterialList = new Material[]{
@@ -106,7 +106,7 @@ public class JailGUI implements Listener {
 
             double[] jailGUITimes = ConfigValues.jailGUITimes;
             for (int i = 2; i < 7; i++) {
-                guiInventory.setItem(i, Worker.createGuiItem(guiMaterialList[i-2], Messages.getMessage("JailGUIBlock", String.valueOf(jailGUITimes[i-2]))));
+                guiInventory.setItem(i, Utility.createGuiItem(guiMaterialList[i-2], Messages.getMessage("JailGUIBlock", String.valueOf(jailGUITimes[i-2]))));
             }
         }
 

@@ -1,6 +1,6 @@
 package com.voidcitymc.plugins.SimplePolice.frisk;
 
-import com.voidcitymc.plugins.SimplePolice.Worker;
+import com.voidcitymc.plugins.SimplePolice.Utility;
 import com.voidcitymc.plugins.SimplePolice.apiInternals.EventManager;
 import com.voidcitymc.plugins.SimplePolice.config.ConfigValues;
 import com.voidcitymc.plugins.SimplePolice.messages.Messages;
@@ -23,7 +23,7 @@ public class Frisk implements Listener {
         if (event.getRightClicked() instanceof Player) {
             Player police = event.getPlayer();
             Player targetedPlayer = (Player) event.getRightClicked();
-            if (ConfigValues.friskingEnabled && Worker.isPolice(police.getUniqueId().toString()) && police.getInventory().getItemInMainHand().getType().equals(ConfigValues.friskStickMaterialType)) {
+            if (ConfigValues.friskingEnabled && Utility.isPolice(police.getUniqueId().toString()) && police.getInventory().getItemInMainHand().getType().equals(ConfigValues.friskStickMaterialType)) {
                 long timeLeft = System.currentTimeMillis() - cooldownManager.getCooldown(targetedPlayer.getUniqueId());
 
                 if (TimeUnit.MILLISECONDS.toSeconds(timeLeft) >= FriskCooldownManager.DEFAULT_COOLDOWN) {
@@ -42,7 +42,7 @@ public class Frisk implements Listener {
                     ArrayList<ItemStack> foundContrabandItems = new ArrayList<>();
 
                     for (ItemStack item: contents) {
-                        if (Worker.isContraband(item)) {
+                        if (Utility.isContraband(item)) {
                             if (Math.random() * 100 <= ConfigValues.percentOfFindingContraband) {
                                 if (!item.getItemMeta().getDisplayName().equals("")) {
                                     textToReturn.add(ChatColor.DARK_AQUA + "" + item.getAmount() + "x " + item.getItemMeta().getDisplayName());

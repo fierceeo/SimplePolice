@@ -1,15 +1,16 @@
 package com.voidcitymc.plugins.SimplePolice.cmd;
 
-import com.voidcitymc.plugins.SimplePolice.Database;
+import com.voidcitymc.plugins.SimplePolice.DatabaseUtility;
 import com.voidcitymc.plugins.SimplePolice.apiInternals.EventManager;
 import com.voidcitymc.plugins.SimplePolice.config.Config;
 import com.voidcitymc.plugins.SimplePolice.config.ConfigValues;
 import com.voidcitymc.plugins.SimplePolice.events.Jail;
-import com.voidcitymc.plugins.SimplePolice.Worker;
+import com.voidcitymc.plugins.SimplePolice.Utility;
 import com.voidcitymc.plugins.SimplePolice.events.PoliceChat;
 import com.voidcitymc.plugins.SimplePolice.frisk.Frisk;
 import com.voidcitymc.plugins.SimplePolice.gui.JailGUI;
 import com.voidcitymc.plugins.SimplePolice.messages.Messages;
+import me.zombie_striker.customitemmanager.CustomBaseObject;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -44,7 +45,7 @@ public class Police implements Listener, CommandExecutor {
         if (sender instanceof Player) {
             player = (Player) sender;
             isPlayer = true;
-            isPolice = Worker.isPolice(player.getUniqueId().toString());
+            isPolice = Utility.isPolice(player.getUniqueId().toString());
         }
 
         switch (cmdArguments[0]) {
@@ -209,9 +210,9 @@ public class Police implements Listener, CommandExecutor {
     }
 
     private void friskListAdd(Player player) {
-        if (!Worker.isContraband(player.getInventory().getItemInMainHand())) {
+        if (!Utility.isContraband(player.getInventory().getItemInMainHand())) {
             if (!player.getInventory().getItemInMainHand().getType().equals(Material.AIR)) {
-                Worker.addContrabandItem(player.getInventory().getItemInMainHand());
+                Utility.addContrabandItem(player.getInventory().getItemInMainHand());
                 player.sendMessage(Messages.getMessage("AdminAddItem"));
             } else {
                 player.sendMessage(Messages.getMessage("AdminAddItemFail"));
@@ -223,7 +224,7 @@ public class Police implements Listener, CommandExecutor {
 
     private void friskListRemove(Player player) {
         if (!player.getInventory().getItemInMainHand().getType().equals(Material.AIR)) {
-            Worker.removeContrabandItem(player.getInventory().getItemInMainHand());
+            Utility.removeContrabandItem(player.getInventory().getItemInMainHand());
             player.sendMessage(Messages.getMessage("AdminRemoveItem"));
         } else {
             player.sendMessage(Messages.getMessage("AdminRemoveItemFail"));
@@ -233,25 +234,24 @@ public class Police implements Listener, CommandExecutor {
     private void friskList(CommandSender sender) {
         ArrayList<String> textToReturn = new ArrayList<>();
         textToReturn.add(Messages.getMessage("PoliceAdminFriskList"));
-        ArrayList<ItemStack> contrabandItems = Database.contrabandItems;
-        for (ItemStack item: contrabandItems) {
+        for (ItemStack item: DatabaseUtility.getContrabandItems()) {
             if (!item.getItemMeta().getDisplayName().equals("")) {
                 textToReturn.add(ChatColor.DARK_AQUA + item.getItemMeta().getDisplayName());
             } else {
                 textToReturn.add(ChatColor.DARK_AQUA + Frisk.capitalize((item.getType().toString().replace("_", " ")).toLowerCase()));
             }
         }
-        ArrayList<String> contrabandQAItems = Database.contrabandQAItems;
-        for (String qaItem: contrabandQAItems) {
-            textToReturn.add(ChatColor.GOLD + Frisk.capitalize(qaItem));
+
+        for (CustomBaseObject qaItem: DatabaseUtility.getContrabandQAItems()) {
+            textToReturn.add(ChatColor.GOLD + Frisk.capitalize(qaItem.getDisplayName()));
         }
-        sender.sendMessage(textToReturn.toArray(new String[textToReturn.size()]));
+        sender.sendMessage(textToReturn.toArray(new String[0]));
     }
 
     private void policeAdd(CommandSender sender, String playerToAdd) {
         if (!playerToAdd.equals("")) {
-            if (Bukkit.getPlayer(playerToAdd) != null && (!Worker.isPolice(Bukkit.getPlayer(playerToAdd).getUniqueId().toString()))) {
-                Worker.addPolice(Bukkit.getPlayer(playerToAdd).getUniqueId().toString());
+            if (Bukkit.getPlayer(playerToAdd) != null && (!Utility.isPolice(Bukkit.getPlayer(playerToAdd).getUniqueId().toString()))) {
+                DatabaseUtility.addPolice(Bukkit.getPlayer(playerToAdd).getUniqueId().toString());
                 sender.sendMessage(Messages.getMessage("PoliceOfficerAdd", playerToAdd));
             } else {
                 sender.sendMessage(Messages.getMessage("PoliceOfficerAddFail", playerToAdd));
@@ -264,8 +264,8 @@ public class Police implements Listener, CommandExecutor {
 
     private void policeRemove(CommandSender sender, String playerToRemove) {
         if (!playerToRemove.equals("")) {
-            if (Bukkit.getPlayer(playerToRemove) != null && Worker.isPolice(Bukkit.getPlayer(playerToRemove).getUniqueId().toString())) {
-                Worker.removePolice(Bukkit.getPlayer(playerToRemove).getUniqueId().toString());
+            if (Bukkit.getPlayer(playerToRemove) != null && Utility.isPolice(Bukkit.getPlayer(playerToRemove).getUniqueId().toString())) {
+                DatabaseUtility.removePolice(Bukkit.getPlayer(playerToRemove).getUniqueId().toString());
                 sender.sendMessage(Messages.getMessage("PoliceOfficerRemove", playerToRemove));
             } else {
                 sender.sendMessage(Messages.getMessage("PoliceOfficerRemoveFail", playerToRemove));
@@ -277,7 +277,7 @@ public class Police implements Listener, CommandExecutor {
 
     private void addJail(Player player, String jailName) {
         if (!jailName.equals("")) {
-            Worker.addJail(jailName, player.getLocation());
+            DatabaseUtility.addJail(jailName, player.getLocation());
             player.sendMessage(Messages.getMessage("PoliceAdminSetJailSuccess", jailName));
         } else {
             player.sendMessage(Messages.getMessage("PoliceAdminSetJailNoJail"));
@@ -286,7 +286,7 @@ public class Police implements Listener, CommandExecutor {
 
     private void removeJail(CommandSender sender, String jailName) {
         if (!jailName.equals("")) {
-            Worker.removeJail(jailName);
+            DatabaseUtility.removeJail(jailName);
             sender.sendMessage(Messages.getMessage("PoliceAdminDelJailSuccess", jailName));
         } else {
             sender.sendMessage(Messages.getMessage("PoliceAdminDelJailNoJail"));
@@ -297,9 +297,9 @@ public class Police implements Listener, CommandExecutor {
         if (!player.equals("")) {
             if (Bukkit.getPlayerExact(player) != null) {
                 if (!jail.equals("")) {
-                    if (!Database.jailLocations.isEmpty()) {
+                    if (!DatabaseUtility.getJailLocations().isEmpty()) {
                         String jailName = jail;
-                        if (Database.jailLocations.containsKey(jailName.toLowerCase())) {
+                        if (Utility.jailList().contains(jailName.toLowerCase())) {
                             Player jailedPlayer = Bukkit.getPlayerExact(player);
                             if (!Jail.isJailed(jailedPlayer.getUniqueId())) {
                                 if (jailedPlayer.isDead()) {
@@ -326,7 +326,7 @@ public class Police implements Listener, CommandExecutor {
                         sender.sendMessage(Messages.getMessage("ArrestNoJails"));
                     }
                 } else {
-                    if (!Database.jailLocations.isEmpty()) {
+                    if (!DatabaseUtility.getJailLocations().isEmpty()) {
                         String jailName = Jail.getJail();
                         Player jailedPlayer = Bukkit.getPlayerExact(player);
                         if (!Jail.isJailed(jailedPlayer.getUniqueId())) {
@@ -364,7 +364,7 @@ public class Police implements Listener, CommandExecutor {
         if (!criminal.equals("")) {
             if (Bukkit.getPlayer(criminal) != null) {
                 int MaxValTp = ConfigValues.maxPoliceTpDistance;
-                Location policeTpLocation = Worker.policeTp(Bukkit.getPlayer(criminal), MaxValTp);
+                Location policeTpLocation = Utility.policeTp(Bukkit.getPlayer(criminal), MaxValTp);
                 police.teleport(policeTpLocation);
                 EventManager.runPoliceTp(police, Bukkit.getPlayer(criminal), policeTpLocation);
                 police.sendMessage(Messages.getMessage("PoliceTp"));

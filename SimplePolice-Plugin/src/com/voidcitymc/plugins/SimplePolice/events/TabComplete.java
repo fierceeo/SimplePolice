@@ -1,6 +1,6 @@
 package com.voidcitymc.plugins.SimplePolice.events;
 
-import com.voidcitymc.plugins.SimplePolice.Worker;
+import com.voidcitymc.plugins.SimplePolice.Utility;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -9,7 +9,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.server.TabCompleteEvent;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 //TODO: clean code
 public class TabComplete implements Listener {
@@ -24,7 +23,7 @@ public class TabComplete implements Listener {
             boolean isPolice = false;
 
             if (sender instanceof Player) {
-                isPolice = Worker.isPolice(((Player) sender).getUniqueId().toString());
+                isPolice = Utility.isPolice(((Player) sender).getUniqueId().toString());
             }
 
             if (sender.hasPermission("SimplePolice.cmd.admin.reload")) {
@@ -49,7 +48,7 @@ public class TabComplete implements Listener {
                 completions = cmdCompletePlayer(completions, "police admin jail add", buffer, false);
             }
             if (sender.hasPermission("SimplePolice.cmd.admin.jails.remove")) {
-                completions = cmdCompletePlayer(completions, "police admin jail remove", buffer, false, Worker.jailList());
+                completions = cmdCompletePlayer(completions, "police admin jail remove", buffer, false, Utility.jailList());
             }
             if (sender.hasPermission("SimplePolice.cmd.jail")) {
                 completions = cmdCompletePlayer(completions, "police jail", buffer, true);

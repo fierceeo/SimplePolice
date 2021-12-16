@@ -49,10 +49,6 @@ public interface Utility {
 
     ArrayList<UUID> onlinePoliceList();
 
-    byte[] serializeItemStack(ItemStack itemStack) throws IOException;
-
-    ItemStack deserializeItemStack(byte[] serializedItemStack) throws IOException, ClassNotFoundException;
-
     void addContrabandItem(ItemStack itemStack);
 
     void removeContrabandItem(ItemStack itemStack);

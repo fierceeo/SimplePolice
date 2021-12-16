@@ -8,6 +8,7 @@ import com.voidcitymc.plugins.SimplePolice.config.ConfigValues;
 import com.voidcitymc.plugins.SimplePolice.config.configvalues.PayPoliceOnArrestMode;
 import com.voidcitymc.plugins.SimplePolice.config.configvalues.TakeMoneyOnArrestMode;
 import com.voidcitymc.plugins.SimplePolice.messages.Messages;
+import me.zombie_striker.customitemmanager.CustomBaseObject;
 import me.zombie_striker.qg.api.QualityArmory;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
@@ -16,17 +17,14 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.mapdb.BTreeMap;
-import org.mapdb.Serializer;
 
-import java.io.*;
 import java.util.*;
 
 
-public class Worker {
+public class Utility {
 
     public static boolean vaultEnabled() {
-        return SimplePolice.vaultEnabled;
+        return SimplePolice.vaultInstalled;
     }
     public static Economy getEconomy() {
         return SimplePolice.economy;
@@ -147,50 +145,20 @@ public class Worker {
         return item;
     }
 
-    public static void addJail(String jailName, Location location) {
-        BTreeMap<String, String> jailLocationsDB = Database.simplePoliceDB.treeMap("jailLocations").keySerializer(Serializer.STRING).valueSerializer(Serializer.STRING).createOrOpen();
-        com.voidcitymc.plugins.SimplePolice.config.configvalues.Location storageLocation = new com.voidcitymc.plugins.SimplePolice.config.configvalues.Location(location);
-        jailLocationsDB.put(jailName.toLowerCase(), storageLocation.toStorageString());
-        Database.simplePoliceDB.commit();
-        Database.jailLocations.put(jailName.toLowerCase(), storageLocation);
-    }
-
-    public static void removeJail(String jailName) {
-        BTreeMap<String, String> jailLocationsDB = Database.simplePoliceDB.treeMap("jailLocations").keySerializer(Serializer.STRING).valueSerializer(Serializer.STRING).createOrOpen();
-        jailLocationsDB.remove(jailName.toLowerCase());
-        Database.simplePoliceDB.commit();
-        Database.jailLocations.remove(jailName.toLowerCase());
-    }
-
     public static ArrayList<String> jailList() {
-        return new ArrayList<>(Database.jailLocations.keySet());
-    }
-
-    //todo: add gun contraband item
-    public static void addPolice(String uuid) {
-        if (!isPolice(uuid)) {
-            NavigableSet<String> policeUUIDListDB = Database.simplePoliceDB.treeSet("policeUUIDList").serializer(Serializer.STRING).createOrOpen();
-            policeUUIDListDB.add(uuid);
-            Database.simplePoliceDB.commit();
-            Database.policeUUIDList.add(uuid);
+        ArrayList<String> jails = new ArrayList<>();
+        for (DatabaseUtility.JailLocation jailLocation: DatabaseUtility.getJailLocations()) {
+            jails.add(jailLocation.getJailName());
         }
-    }
-
-    public static void removePolice(String uuid) {
-        if (isPolice(uuid)) {
-            NavigableSet<String> policeUUIDListDB = Database.simplePoliceDB.treeSet("policeUUIDList").serializer(Serializer.STRING).createOrOpen();
-            policeUUIDListDB.remove(uuid);
-            Database.simplePoliceDB.commit();
-            Database.policeUUIDList.remove(uuid);
-        }
+        return jails;
     }
 
     public static boolean isPolice(String uuid) {
-        return Database.policeUUIDList.contains(uuid);
+        return DatabaseUtility.getPoliceUUIDList().contains(uuid);
     }
 
     public static boolean arePoliceOnline() {
-        Iterator<String> policeIterator = Database.policeUUIDList.iterator();
+        Iterator<String> policeIterator = DatabaseUtility.getPoliceUUIDList().iterator();
         while (policeIterator.hasNext()) {
             if (Bukkit.getPlayer(UUID.fromString(policeIterator.next())) != null) {
                 return true;
@@ -200,7 +168,7 @@ public class Worker {
     }
 
     public static ArrayList<UUID> onlinePoliceList() {
-        Iterator<String> policeIterator = Database.policeUUIDList.iterator();
+        Iterator<String> policeIterator = DatabaseUtility.getPoliceUUIDList().iterator();
         ArrayList<UUID> onlinePolice = new ArrayList<>();
         while (policeIterator.hasNext()) {
             UUID currentPlayer = UUID.fromString(policeIterator.next());
@@ -211,104 +179,63 @@ public class Worker {
         return onlinePolice;
     }
 
-    public static byte[] serializeItemStack(ItemStack itemStack) throws IOException {
-        if (itemStack != null) {
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            ObjectOutputStream objStream = new ObjectOutputStream(byteArrayOutputStream);
-            objStream.writeObject(itemStack);
-            return byteArrayOutputStream.toByteArray();
+    public static void addContrabandItem(ItemStack item) {
+        if (item == null || isContraband(item)) {
+            return;
+        }
+        ItemStack itemClone = generifyItemStack(item);
+        if (isQaItem(itemClone)) {
+            System.out.println("[Debug] Adding qa item "+ itemClone);
+            DatabaseUtility.addQAItem(QualityArmory.getCustomItem(itemClone));
         } else {
+            System.out.println("[Debug] Adding item "+ itemClone);
+            DatabaseUtility.addItem(itemClone);
+        }
+    }
+
+    public static void removeContrabandItem(ItemStack item) {
+        if (item == null || !isContraband(item)) {
+            return;
+        }
+        ItemStack itemClone = generifyItemStack(item);
+        if (isQaItem(itemClone)) {
+            DatabaseUtility.addQAItem(QualityArmory.getCustomItem(itemClone));
+        } else {
+            DatabaseUtility.addItem(itemClone);
+        }
+    }
+
+    public static boolean isQaItem(ItemStack item) {
+        return (SimplePolice.qaInstalled && (QualityArmory.isCustomItem(item)));
+    }
+
+    public static CustomBaseObject generifyQACustomBaseObject(CustomBaseObject item) {
+        item.setPrice(0);
+        item.setIngredients(null);
+        item.setCraftingReturn(1);
+        item.setMaxItemStack(1);
+        item.setSoundOnHit(null);
+        item.setSoundOnEquip(null);
+        item.setCustomLore(null);
+        return (new DatabaseUtility.CustomBaseObjectWrapper(item)).getCustomBaseObject();
+    }
+
+    public static ItemStack generifyItemStack(ItemStack item) {
+        if (item == null) {
             return null;
         }
+        ItemStack itemClone = item.clone();
+        itemClone.setAmount(1);
+        return itemClone;
     }
 
-    public static ItemStack deserializeItemStack(byte[] serializedItemStack) throws IOException, ClassNotFoundException {
-        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(serializedItemStack);
-        ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
-        Object objectItemStack = objectInputStream.readObject();
-        if (objectItemStack instanceof ItemStack) {
-            return (ItemStack) objectItemStack;
-        } else {
-            return null;
+    public static boolean isContraband(ItemStack item) {
+        if (isQaItem(item) && DatabaseUtility.getContrabandQAItems().contains(generifyQACustomBaseObject(QualityArmory.getCustomItem(generifyItemStack(item))))) {
+            return true;
+        } else if (DatabaseUtility.getContrabandItems().contains(generifyItemStack(item))) {
+            return true;
         }
-    }
-
-    public static void addContrabandItem(ItemStack itemStack) {
-        if (itemStack != null) {
-            ItemStack itemStackCorrectedAmount = itemStack.clone();
-            itemStackCorrectedAmount.setAmount(1);
-            if (Bukkit.getServer().getPluginManager().getPlugin("QualityArmory") != null && (QualityArmory.isGun(itemStack) || QualityArmory.isCustomItem(itemStack))) {
-                NavigableSet<String> contrabandQAItemsDB = Database.simplePoliceDB.treeSet("contrabandQAItems").serializer(Serializer.STRING).createOrOpen();
-                String qaItemName = QualityArmory.getCustomItem(itemStack).getName();
-                if (qaItemName == null) {
-                    qaItemName = QualityArmory.getGun(itemStack).getName();
-                }
-                contrabandQAItemsDB.add(qaItemName);
-                Database.contrabandQAItems.add(qaItemName);
-            } else {
-                NavigableSet<byte[]> contrabandItemsDB = Database.simplePoliceDB.treeSet("contrabandItems").serializer(Serializer.BYTE_ARRAY).createOrOpen();
-                byte[] serializedItemStack = null;
-                try {
-                    serializedItemStack = serializeItemStack(itemStackCorrectedAmount);
-                } catch (IOException ignored) {
-                }
-                if (serializedItemStack != null) {
-                    contrabandItemsDB.add(serializedItemStack);
-                }
-                Database.contrabandItems.add(itemStackCorrectedAmount);
-            }
-            Database.simplePoliceDB.commit();
-        }
-    }
-
-    public static void removeContrabandItem(ItemStack itemStack) {
-        if (itemStack != null) {
-            ItemStack itemStackCorrectedAmount = itemStack.clone();
-            itemStackCorrectedAmount.setAmount(1);
-            if (Bukkit.getServer().getPluginManager().getPlugin("QualityArmory") != null && (QualityArmory.isGun(itemStack) || QualityArmory.isCustomItem(itemStack))) {
-                NavigableSet<String> contrabandQAItemsDB = Database.simplePoliceDB.treeSet("contrabandQAItems").serializer(Serializer.STRING).createOrOpen();
-                String qaItemName = QualityArmory.getCustomItem(itemStack).getName();
-                if (qaItemName == null) {
-                    qaItemName = QualityArmory.getGun(itemStack).getName();
-                }
-                contrabandQAItemsDB.remove(qaItemName);
-                Database.contrabandQAItems.remove(qaItemName);
-            } else {
-                NavigableSet<byte[]> contrabandItemsDB = Database.simplePoliceDB.treeSet("contrabandItems").serializer(Serializer.BYTE_ARRAY).createOrOpen();
-                byte[] serializedItemStack = null;
-                try {
-                    serializedItemStack = serializeItemStack(itemStackCorrectedAmount);
-                } catch (IOException ignored) {
-                }
-                if (serializedItemStack != null) {
-                    contrabandItemsDB.remove(serializedItemStack);
-                }
-                Database.contrabandItems.remove(itemStackCorrectedAmount);
-            }
-            Database.simplePoliceDB.commit();
-        }
-    }
-
-    public static boolean isContraband(ItemStack itemStack) {
-        if (itemStack != null) {
-            ItemStack itemStackCorrectedAmount = itemStack.clone();
-            itemStackCorrectedAmount.setAmount(1);
-            if (Bukkit.getServer().getPluginManager().getPlugin("QualityArmory") != null) {
-                if (QualityArmory.isGun(itemStack) && ConfigValues.markAllGunsAsContraband) {
-                    return true;
-                }
-                if ((QualityArmory.isGun(itemStack) || QualityArmory.isCustomItem(itemStack))) {
-                    boolean isContraband = Database.contrabandQAItems.contains(QualityArmory.getCustomItem(itemStackCorrectedAmount).getName());
-                    if (!isContraband) {
-                        isContraband = Database.contrabandQAItems.contains(QualityArmory.getGun(itemStackCorrectedAmount).getName());
-                    }
-                    return isContraband;
-                }
-            }
-            return Database.contrabandItems.contains(itemStackCorrectedAmount);
-        } else {
-            return false;
-        }
+        return false;
     }
 
     //todo: cleanup method

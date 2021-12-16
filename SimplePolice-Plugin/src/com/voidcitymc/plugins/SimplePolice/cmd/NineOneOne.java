@@ -1,6 +1,6 @@
 package com.voidcitymc.plugins.SimplePolice.cmd;
 
-import com.voidcitymc.plugins.SimplePolice.Worker;
+import com.voidcitymc.plugins.SimplePolice.Utility;
 import com.voidcitymc.plugins.SimplePolice.apiInternals.EventManager;
 import com.voidcitymc.plugins.SimplePolice.config.ConfigValues;
 import com.voidcitymc.plugins.SimplePolice.messages.Messages;
@@ -23,7 +23,7 @@ public class NineOneOne implements CommandExecutor {
         if (sender instanceof Player) {
             Player player = (Player) sender;
 
-            ArrayList<UUID> onlinePoliceList = Worker.onlinePoliceList();
+            ArrayList<UUID> onlinePoliceList = Utility.onlinePoliceList();
 
             if (onlinePoliceList.size() > 0) {
                 StringBuilder nineOneOneMessage = new StringBuilder();
