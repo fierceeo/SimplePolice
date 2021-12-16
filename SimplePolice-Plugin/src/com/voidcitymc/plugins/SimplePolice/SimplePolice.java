@@ -43,8 +43,7 @@ public class SimplePolice extends JavaPlugin implements SimplePoliceAPI {
         Config messagesConfig = new Config("Messages.properties");
         messagesConfig.setupConfig();
         Messages.initialize(messagesConfig);
-        DatabaseUtility.iniDatabase();
-        DatabaseUtility.loadDatabase();
+        DatabaseUtility.initDatabase();
 
         (new UpdateChecker(this)).checkForUpdate();
         metrics = new Metrics(this, 6814);
