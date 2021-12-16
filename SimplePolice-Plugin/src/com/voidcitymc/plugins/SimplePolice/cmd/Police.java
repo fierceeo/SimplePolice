@@ -108,6 +108,7 @@ public class Police implements Listener, CommandExecutor {
                                 } else {
                                     invalidCommand(sender);
                                 }
+                                break;
                             default:
                                 invalidCommand(sender);
                                 break;

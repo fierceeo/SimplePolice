@@ -1,40 +1,44 @@
 package com.voidcitymc.plugins.SimplePolice;
 
+import com.google.gson.reflect.TypeToken;
+import com.voidcitymc.plugins.SimplePolice.events.Jail;
 import me.zombie_striker.customitemmanager.CustomBaseObject;
 import me.zombie_striker.customitemmanager.MaterialStorage;
 import org.bukkit.Location;
+import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.*;
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.util.*;
 
 public class DatabaseUtility {
 
     private static ArrayList<ItemStack> contrabandItems = new ArrayList<>();
-    private static Database contrabandItemsDB;
+    private static Database<Map<String, Object>> contrabandItemsDB;
 
     private static ArrayList<CustomBaseObject> contrabandQAItems = new ArrayList<>();
-    private static Database contrabandQAItemsDB;
+    private static Database<CustomBaseObject> contrabandQAItemsDB;
 
     private static ArrayList<String> policeUUIDList = new ArrayList<>();
-    private static Database policeUUIDListDB;
+    private static Database<String> policeUUIDListDB;
 
-    private static ArrayList<JailLocation> jailLocations = new ArrayList<>();
-    private static Database jailLocationsDB;
+    private static ArrayList<Jail.JailLocation> jailLocations = new ArrayList<>();
+    private static Database<Jail.JailLocation> jailLocationsDB;
 
 
     protected static void iniDatabase() {
         (new File(SimplePolice.getPluginFolderPath()+File.separator+"Database")).mkdirs();
-        contrabandItemsDB = new Database("contrabandItems");
+        contrabandItemsDB = new Database<>("contrabandItems", new TypeToken<ArrayList<Map<String, Object>>>(){});
         contrabandItemsDB.load();
         if (SimplePolice.qaInstalled) {
-            contrabandQAItemsDB = new Database("contrabandQaItems");
+            contrabandQAItemsDB = new Database<>("contrabandQaItems", new TypeToken<ArrayList<CustomBaseObject>>() {});
             contrabandQAItemsDB.load();
         }
-        policeUUIDListDB = new Database("policeList");
+        policeUUIDListDB = new Database<>("policeList", new TypeToken<ArrayList<String>>() {});
         policeUUIDListDB.load();
-        jailLocationsDB = new Database("jailLocations");
+        jailLocationsDB = new Database<>("jailLocations", new TypeToken<ArrayList<Jail.JailLocation>>() {});
         jailLocationsDB.load();
     }
 
@@ -46,7 +50,7 @@ public class DatabaseUtility {
         return contrabandItems;
     }
 
-    public static ArrayList<JailLocation> getJailLocations() {
+    public static ArrayList<Jail.JailLocation> getJailLocations() {
         return jailLocations;
     }
 
@@ -62,7 +66,7 @@ public class DatabaseUtility {
             return;
         }
         CustomBaseObject genericBaseItem = Utility.generifyQACustomBaseObject(baseItem);
-        contrabandQAItemsDB.add(new CustomBaseObjectWrapper(genericBaseItem));
+        contrabandQAItemsDB.add(genericBaseItem);
         contrabandQAItems.add(genericBaseItem);
         contrabandQAItemsDB.save();
     }
@@ -75,7 +79,7 @@ public class DatabaseUtility {
             return;
         }
         CustomBaseObject genericBaseItem = Utility.generifyQACustomBaseObject(baseItem);
-        contrabandQAItemsDB.remove(new CustomBaseObjectWrapper(genericBaseItem));
+        contrabandQAItemsDB.remove(genericBaseItem);
         contrabandQAItems.remove(genericBaseItem);
         contrabandQAItemsDB.save();
     }
@@ -85,13 +89,13 @@ public class DatabaseUtility {
             return;
         }
         ItemStack genericItem = Utility.generifyItemStack(item);
-        contrabandItemsDB.add(new ItemStackWrapper(genericItem));
+        contrabandItemsDB.add(genericItem.serialize());
         contrabandItems.add(genericItem);
         contrabandItemsDB.save();
     }
 
     protected static void removeItem(ItemStack item) {
-        contrabandItemsDB.remove(new ItemStackWrapper(item));
+        contrabandItemsDB.remove(item.serialize());
         contrabandItems.remove(item);
         contrabandItemsDB.save();
     }
@@ -111,17 +115,17 @@ public class DatabaseUtility {
     }
 
     public static void addJail(String jailName, Location location) {
-        JailLocation jailLocation = new JailLocation(jailName, location);
+        Jail.JailLocation jailLocation = new Jail.JailLocation(jailName, location);
         jailLocationsDB.add(jailLocation);
         jailLocations.add(jailLocation);
         jailLocationsDB.save();
     }
 
     public static void removeJail(String jailName) {
-        for (Object object: jailLocationsDB.getData()) {
-            if (object instanceof JailLocation && ((JailLocation) object).getJailName().equals(jailName)) {
-                jailLocations.remove(object);
-                jailLocationsDB.remove(object);
+        for (Jail.JailLocation jailLocation: jailLocationsDB.getData()) {
+            if (jailLocation.getJailName().equals(jailName)) {
+                jailLocations.remove(jailLocation);
+                jailLocationsDB.remove(jailLocation);
             }
         }
         jailLocationsDB.save();
@@ -129,34 +133,20 @@ public class DatabaseUtility {
 
     protected static void loadDatabase() {
         //contraband items
-        for (Object objectItem: contrabandItemsDB.getData()) {
-            if (objectItem instanceof ItemStackWrapper) {
-                contrabandItems.add(((ItemStackWrapper) objectItem).getItemStack());
-            }
+        for (Map<String, Object> rawItemStack: contrabandItemsDB.getData()) {
+            contrabandItems.add(ItemStack.deserialize(rawItemStack));
         }
 
         if (contrabandQAItemsDB != null) {
             //qa contraband items
-            for (Object objectItem : contrabandQAItemsDB.getData()) {
-                if (objectItem instanceof CustomBaseObjectWrapper) {
-                    contrabandQAItems.add(((CustomBaseObjectWrapper) objectItem).getCustomBaseObject());
-                }
-            }
+            contrabandQAItems.addAll(contrabandQAItemsDB.getData());
         }
 
         //police list
-        for (Object objectString: policeUUIDListDB.getData()) {
-            if (objectString instanceof String) {
-                policeUUIDList.add((String) objectString);
-            }
-        }
+        policeUUIDList.addAll(policeUUIDListDB.getData());
 
         //jail locations list
-        for (Object locationObject: jailLocationsDB.getData()) {
-            if (locationObject instanceof JailLocation) {
-                jailLocations.add((JailLocation) locationObject);
-            }
-        }
+        jailLocations.addAll(jailLocationsDB.getData());
 
     }
 
@@ -167,68 +157,5 @@ public class DatabaseUtility {
         }
         policeUUIDListDB.save();
         jailLocationsDB.save();
-    }
-
-    public static class JailLocation implements Serializable {
-        private String jailName;
-        private Map<String, Object> location;
-
-        public JailLocation(String jailName, Location location) {
-            this.jailName = jailName;
-            this.location = location.serialize();
-        }
-
-        public String getJailName() {
-            return jailName;
-        }
-
-        public Location getLocation() {
-            return Location.deserialize(location);
-        }
-    }
-
-    private static class ItemStackWrapper {
-        private Map<String, Object> itemstack;
-
-        public ItemStackWrapper(ItemStack itemStack) {
-            this.itemstack = itemStack.serialize();
-        }
-
-        public ItemStack getItemStack() {
-            return ItemStack.deserialize(itemstack);
-        }
-    }
-
-    public static class CustomBaseObjectWrapper {
-        private String name;
-        private MaterialStorage storage;
-        private String displayname;
-        private List<String> lore;
-        private boolean hasAimAnimations;
-
-        public CustomBaseObjectWrapper(CustomBaseObject customBaseObject) {
-            this.name = customBaseObject.getName();
-            this.storage = customBaseObject.getItemData();
-            this.displayname = customBaseObject.getDisplayName();
-
-            try {
-                Field loreField = CustomBaseObject.class.getField("lore");
-                loreField.setAccessible(true);
-                this.lore = (List<String>) loreField.get(customBaseObject);
-            } catch (IllegalAccessException | NoSuchFieldException ignored) {
-                this.lore = customBaseObject.getCustomLore();
-            }
-
-            //access has aim animations which is a protected field
-            try {
-                Field hasAimAnimationsField = CustomBaseObject.class.getField("hasAimAnimations");
-                hasAimAnimationsField.setAccessible(true);
-                this.hasAimAnimations = (boolean) hasAimAnimationsField.get(customBaseObject);
-            } catch (IllegalAccessException | NoSuchFieldException ignored) {}
-        }
-
-        public CustomBaseObject getCustomBaseObject() {
-            return new CustomBaseObject(name, storage, displayname, lore, hasAimAnimations);
-        }
     }
 }

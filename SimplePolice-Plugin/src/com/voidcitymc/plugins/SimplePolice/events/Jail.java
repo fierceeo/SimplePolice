@@ -162,7 +162,7 @@ public class Jail implements Listener {
     }
 
     public static Location getJailLocation(String jailName) {
-        for (DatabaseUtility.JailLocation jailLocation: DatabaseUtility.getJailLocations()) {
+        for (JailLocation jailLocation: DatabaseUtility.getJailLocations()) {
             if (jailLocation.getJailName().equals(jailName)) {
                 return jailLocation.getLocation();
             }
@@ -201,6 +201,24 @@ public class Jail implements Listener {
 
         }
 
+    }
+
+    public static class JailLocation {
+        private String jailName;
+        private Map<String, Object> location;
+
+        public JailLocation(String jailName, Location location) {
+            this.jailName = jailName;
+            this.location = location.serialize();
+        }
+
+        public String getJailName() {
+            return jailName;
+        }
+
+        public Location getLocation() {
+            return Location.deserialize(location);
+        }
     }
 
 }

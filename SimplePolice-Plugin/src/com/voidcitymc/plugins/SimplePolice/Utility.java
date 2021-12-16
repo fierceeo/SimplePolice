@@ -7,6 +7,7 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.voidcitymc.plugins.SimplePolice.config.ConfigValues;
 import com.voidcitymc.plugins.SimplePolice.config.configvalues.PayPoliceOnArrestMode;
 import com.voidcitymc.plugins.SimplePolice.config.configvalues.TakeMoneyOnArrestMode;
+import com.voidcitymc.plugins.SimplePolice.events.Jail;
 import com.voidcitymc.plugins.SimplePolice.messages.Messages;
 import me.zombie_striker.customitemmanager.CustomBaseObject;
 import me.zombie_striker.qg.api.QualityArmory;
@@ -147,7 +148,7 @@ public class Utility {
 
     public static ArrayList<String> jailList() {
         ArrayList<String> jails = new ArrayList<>();
-        for (DatabaseUtility.JailLocation jailLocation: DatabaseUtility.getJailLocations()) {
+        for (Jail.JailLocation jailLocation: DatabaseUtility.getJailLocations()) {
             jails.add(jailLocation.getJailName());
         }
         return jails;
@@ -217,7 +218,7 @@ public class Utility {
         item.setSoundOnHit(null);
         item.setSoundOnEquip(null);
         item.setCustomLore(null);
-        return (new DatabaseUtility.CustomBaseObjectWrapper(item)).getCustomBaseObject();
+        return item;
     }
 
     public static ItemStack generifyItemStack(ItemStack item) {

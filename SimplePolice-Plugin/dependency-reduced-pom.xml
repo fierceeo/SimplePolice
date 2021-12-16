@@ -3,12 +3,12 @@
   <parent>
     <artifactId>SimplePolice</artifactId>
     <groupId>com.voidcity.SimplePolice-Project</groupId>
-    <version>5.2.1</version>
+    <version>6.0.0-pre1</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.voidcity.SimplePolice</groupId>
   <artifactId>SimplePolice-Plugin</artifactId>
-  <version>5.2.1</version>
+  <version>6.0.0-pre1</version>
   <build>
     <sourceDirectory>src</sourceDirectory>
     <resources>

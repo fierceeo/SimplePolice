@@ -7,11 +7,13 @@ import com.google.gson.reflect.TypeToken;
 import java.io.*;
 import java.util.ArrayList;
 
-public class Database {
+public class Database<T> {
     private String filePath;
-    private ArrayList<Object> data = new ArrayList<>();
+    private ArrayList<T> data = new ArrayList<>();
+    private TypeToken typeToken;
 
-    public Database(String databaseName) {
+    public Database(String databaseName, TypeToken<ArrayList<T>> typeToken) {
+        this.typeToken = typeToken;
         this.filePath = SimplePolice.getPluginFolderPath()+File.separator+"Database"+File.separator+databaseName+".json";
     }
 
@@ -32,9 +34,9 @@ public class Database {
 
 
         try {
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            Gson gson = new GsonBuilder().create();
             Reader reader = new FileReader(databaseFile);
-            data = gson.fromJson(reader, new TypeToken<ArrayList<Object>>(){}.getType());
+            data = gson.fromJson(reader, typeToken.getType());
             reader.close();
         } catch (IOException e) {
             return false;
@@ -67,15 +69,15 @@ public class Database {
         return true;
     }
 
-    public ArrayList<Object> getData() {
+    public ArrayList<T> getData() {
         return data;
     }
 
-    public void add(Object item) {
+    public void add(T item) {
         this.data.add(item);
     }
 
-    public void remove(Object item) {
+    public void remove(T item) {
         this.data.remove(item);
     }
 
