@@ -102,6 +102,12 @@ public class Police implements Listener, CommandExecutor {
                                     invalidCommand(sender);
                                 }
                                 break;
+                            case "list":
+                                if (sender.hasPermission("SimplePolice.cmd.admin.police.list")) {
+                                    policeList(sender);
+                                } else {
+                                    invalidCommand(sender);
+                                }
                             default:
                                 invalidCommand(sender);
                                 break;
@@ -119,6 +125,13 @@ public class Police implements Listener, CommandExecutor {
                             case "remove":
                                 if (sender.hasPermission("SimplePolice.cmd.admin.jails.remove")) {
                                     removeJail(sender, cmdArguments[3]);
+                                } else {
+                                    invalidCommand(sender);
+                                }
+                                break;
+                            case "list":
+                                if (sender.hasPermission("SimplePolice.cmd.admin.jails.list")) {
+                                    listJail(sender);
                                 } else {
                                     invalidCommand(sender);
                                 }
@@ -419,6 +432,39 @@ public class Police implements Listener, CommandExecutor {
         PoliceChat.toggleChat(player.getUniqueId().toString());
     }
 
+    public void listJail(CommandSender sender) {
+        ArrayList<String> textToReturn = new ArrayList<>(Utility.jailList());
+
+        for (int i = 0; i<textToReturn.size(); i++) {
+            textToReturn.set(i, ChatColor.DARK_AQUA+textToReturn.get(i));
+        }
+
+        textToReturn.add(0, Messages.getMessage("PoliceAdminJailList"));
+
+        sender.sendMessage(textToReturn.toArray(new String[0]));
+    }
+
+    public void policeList(CommandSender sender) {
+        ArrayList<String> textToReturn = new ArrayList<>();
+
+        for (String uuid: DatabaseUtility.getPoliceUUIDList()) {
+            Player player = Bukkit.getPlayer(UUID.fromString(uuid));
+            if (player != null) {
+                textToReturn.add(Bukkit.getPlayer(UUID.fromString(uuid)).getName());
+            } else {
+                textToReturn.add(uuid);
+            }
+        }
+
+        for (int i = 0; i<textToReturn.size(); i++) {
+            textToReturn.set(i, ChatColor.DARK_AQUA+textToReturn.get(i));
+        }
+
+        textToReturn.add(0, Messages.getMessage("PoliceOfficerList"));
+
+        sender.sendMessage(textToReturn.toArray(new String[0]));
+    }
+
     private void adminHelp(CommandSender sender) {
         sender.sendMessage(Messages.getMessage("PoliceAdminHelpTitle"));
         sender.sendMessage(Messages.getMessage("PoliceAdminHelp1"));
@@ -431,10 +477,10 @@ public class Police implements Listener, CommandExecutor {
         if (sender.hasPermission("SimplePolice.cmd.admin.frisk.list")) {
             sender.sendMessage(Messages.getMessage("PoliceAdminHelpFriskList"));
         }
-        if (sender.hasPermission("SimplePolice.cmd.admin.police.add") || sender.hasPermission("SimplePolice.cmd.admin.police.remove")) {
+        if (sender.hasPermission("SimplePolice.cmd.admin.police.add") || sender.hasPermission("SimplePolice.cmd.admin.police.remove") || sender.hasPermission("SimplePolice.cmd.admin.police.list")) {
             sender.sendMessage(Messages.getMessage("PoliceAdminHelpPolice"));
         }
-        if (sender.hasPermission("SimplePolice.cmd.admin.jails.add") || sender.hasPermission("SimplePolice.cmd.admin.jails.remove")) {
+        if (sender.hasPermission("SimplePolice.cmd.admin.jails.add") || sender.hasPermission("SimplePolice.cmd.admin.jails.remove") || sender.hasPermission("SimplePolice.cmd.admin.jails.list")) {
             sender.sendMessage(Messages.getMessage("PoliceAdminHelpJail"));
         }
     }

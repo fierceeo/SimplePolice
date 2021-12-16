@@ -28,9 +28,13 @@ permissions:
     default: op
   SimplePolice.cmd.admin.police.remove:
     default: op
+  SimplePolice.cmd.admin.police.list:
+    default: op
   SimplePolice.cmd.admin.jails.add:
     default: op
   SimplePolice.cmd.admin.jails.remove:
+    default: op
+  SimplePolice.cmd.admin.jails.list:
     default: op
   SimplePolice.cmd.jail:
     default: op

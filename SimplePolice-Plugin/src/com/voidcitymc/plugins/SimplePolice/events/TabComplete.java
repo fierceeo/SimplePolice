@@ -44,11 +44,17 @@ public class TabComplete implements Listener {
             if (sender.hasPermission("SimplePolice.cmd.admin.police.remove")) {
                 completions = cmdCompletePlayer(completions, "police admin police remove", buffer, true);
             }
+            if (sender.hasPermission("SimplePolice.cmd.admin.police.list")) {
+                completions = cmdCompletePlayer(completions, "police admin police list", buffer, true);
+            }
             if (sender.hasPermission("SimplePolice.cmd.admin.jails.add")) {
                 completions = cmdCompletePlayer(completions, "police admin jail add", buffer, false);
             }
             if (sender.hasPermission("SimplePolice.cmd.admin.jails.remove")) {
                 completions = cmdCompletePlayer(completions, "police admin jail remove", buffer, false, Utility.jailList());
+            }
+            if (sender.hasPermission("SimplePolice.cmd.admin.jails.list")) {
+                completions = cmdCompletePlayer(completions, "police admin jail list", buffer, false, Utility.jailList());
             }
             if (sender.hasPermission("SimplePolice.cmd.jail")) {
                 completions = cmdCompletePlayer(completions, "police jail", buffer, true);
