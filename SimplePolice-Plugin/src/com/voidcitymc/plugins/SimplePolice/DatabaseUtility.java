@@ -105,9 +105,11 @@ public class DatabaseUtility {
     }
 
     public static void addJail(String jailName, Location location) {
-        Jail.JailLocation jailLocation = new Jail.JailLocation(jailName, location);
-        jailLocationsDB.add(jailLocation);
-        jailLocationsDB.save();
+        if (!jailLocationsDB.getData().contains(jailName)) {
+            Jail.JailLocation jailLocation = new Jail.JailLocation(jailName, location);
+            jailLocationsDB.add(jailLocation);
+            jailLocationsDB.save();
+        }
     }
 
     public static void removeJail(String jailName) {
