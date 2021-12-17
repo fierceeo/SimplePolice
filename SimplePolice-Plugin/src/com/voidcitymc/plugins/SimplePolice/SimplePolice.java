@@ -27,8 +27,8 @@ public class SimplePolice extends JavaPlugin implements SimplePoliceAPI {
 
     protected static Economy economy = null;
 
-    protected static boolean vaultInstalled = false;
-    protected static boolean qaInstalled = false;
+    public static boolean vaultInstalled = false;
+    public static boolean qaInstalled = false;
 
     private static String pluginFolderPath;
 

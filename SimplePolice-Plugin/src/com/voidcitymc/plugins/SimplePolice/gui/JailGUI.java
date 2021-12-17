@@ -84,7 +84,7 @@ public class JailGUI implements Listener {
     public Inventory createGUI(Player player) {
         Inventory guiInventory = Bukkit.createInventory(null, 9, guiName);
 
-        Material[] guiMaterialList = new Material[]{
+        ItemStack[] guiItemstackList = new ItemStack[]{
                 LegacyUtils.getStainedClay(DyeColor.RED),
                 LegacyUtils.getStainedClay(DyeColor.ORANGE),
                 LegacyUtils.getStainedClay(DyeColor.YELLOW),
@@ -93,7 +93,7 @@ public class JailGUI implements Listener {
 
         double[] jailGUITimes = ConfigValues.jailGUITimes;
         for (int i = 2; i < 7; i++) {
-            guiInventory.setItem(i, Utility.createGuiItem(guiMaterialList[i-2], Messages.getMessage("JailGUIBlock", String.valueOf(jailGUITimes[i-2]))));
+            guiInventory.setItem(i, Utility.createGuiItem(guiItemstackList[i-2], Messages.getMessage("JailGUIBlock", String.valueOf(jailGUITimes[i-2]))));
         }
 
 

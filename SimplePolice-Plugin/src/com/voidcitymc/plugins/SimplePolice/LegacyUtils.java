@@ -2,6 +2,7 @@ package com.voidcitymc.plugins.SimplePolice;
 
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
+import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
@@ -9,46 +10,66 @@ import java.lang.reflect.InvocationTargetException;
 
 public class LegacyUtils {
 
-    public static Material getStainedClay(DyeColor dyeColor) {
-        //pre 1.13
-        if (!isDeprecated(DyeColor.class, "getWoolData")) {
-            try {
-                short woolData = (short) DyeColor.class.getDeclaredMethod("getWoolData").invoke(dyeColor);
-                return ItemStack.class.getConstructor(Material.class, Integer.TYPE, Short.TYPE).newInstance(Enum.valueOf(Material.class, "STAINED_CLAY"), 1, woolData).getType();
-            } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                return null;
+    public static ItemStack getStainedClay(DyeColor dyeColor) {
+
+        //post 1.13
+        if (enumExists(Material.class, "RED_TERRACOTTA")) {
+            switch (dyeColor) {
+                case RED:
+                    return new ItemStack(Material.RED_TERRACOTTA,1);
+                case ORANGE:
+                    return new ItemStack(Material.ORANGE_TERRACOTTA,1);
+                case YELLOW:
+                    return new ItemStack(Material.YELLOW_TERRACOTTA,1);
+                case LIME:
+                    return new ItemStack(Material.LIME_TERRACOTTA,1);
+                case LIGHT_BLUE:
+                    return new ItemStack(Material.LIGHT_BLUE_TERRACOTTA,1);
             }
         }
 
-        //post 1.13
-        switch (dyeColor) {
-            case RED:
-                return Material.RED_TERRACOTTA;
-            case ORANGE:
-                return Material.ORANGE_TERRACOTTA;
-            case YELLOW:
-                return Material.YELLOW_TERRACOTTA;
-            case LIME:
-                return Material.LIME_TERRACOTTA;
-            case LIGHT_BLUE:
-                return Material.LIGHT_BLUE_TERRACOTTA;
+        //pre 1.13
+        try {
+            byte woolData = (byte) DyeColor.class.getDeclaredMethod("getWoolData").invoke(dyeColor);
+            return ItemStack.class.getConstructor(Material.class, Integer.TYPE, Short.TYPE).newInstance(Enum.valueOf(Material.class, "STAINED_CLAY"), 1, (short)woolData);
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            return null;
         }
-
-        return null;
+        //return null;
     }
 
     public static ItemStack getItemInMainHand(PlayerInventory playerInventory) {
-        //pre 1.9
-        if (!isDeprecated(PlayerInventory.class, "getItemInHand")) {
-            try {
-                return (ItemStack) PlayerInventory.class.getDeclaredMethod("getItemInHand").invoke(playerInventory);
-            } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                return null;
-            }
+        //post 1.9F
+        if (methodExists(PlayerInventory.class, "getItemInMainHand")) {
+            return playerInventory.getItemInMainHand();
         }
 
-        //post 1.9F
-        return playerInventory.getItemInMainHand();
+        //pre 1.9
+        try {
+            return (ItemStack) PlayerInventory.class.getDeclaredMethod("getItemInHand").invoke(playerInventory);
+        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            return null;
+        }
+
+
+    }
+
+    public static boolean methodExists(Class className, String methodName) {
+        try {
+            className.getDeclaredMethod(methodName);
+        } catch (NoSuchMethodException e) {
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean enumExists(Class className, String enumKey) {
+        try {
+            Enum.valueOf(className, enumKey);
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
     }
 
     public static boolean isDeprecated(Class className, String methodName) {

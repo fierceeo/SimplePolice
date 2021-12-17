@@ -2,6 +2,7 @@ package com.voidcitymc.plugins.SimplePolice.cmd;
 
 import com.voidcitymc.plugins.SimplePolice.DatabaseUtility;
 import com.voidcitymc.plugins.SimplePolice.LegacyUtils;
+import com.voidcitymc.plugins.SimplePolice.SimplePolice;
 import com.voidcitymc.plugins.SimplePolice.apiInternals.EventManager;
 import com.voidcitymc.plugins.SimplePolice.config.Config;
 import com.voidcitymc.plugins.SimplePolice.config.ConfigValues;
@@ -249,17 +250,21 @@ public class Police implements Listener, CommandExecutor {
     private void friskList(CommandSender sender) {
         ArrayList<String> textToReturn = new ArrayList<>();
         textToReturn.add(Messages.getMessage("PoliceAdminFriskList"));
+
         for (ItemStack item: DatabaseUtility.getContrabandItems()) {
-            if (!item.getItemMeta().getDisplayName().equals("")) {
+            if (item.getItemMeta().getDisplayName() != null && !item.getItemMeta().getDisplayName().equals("")) {
                 textToReturn.add(ChatColor.DARK_AQUA + item.getItemMeta().getDisplayName());
             } else {
                 textToReturn.add(ChatColor.DARK_AQUA + Frisk.capitalize((item.getType().toString().replace("_", " ")).toLowerCase()));
             }
         }
 
-        for (CustomBaseObject qaItem: DatabaseUtility.getContrabandQAItems()) {
-            textToReturn.add(ChatColor.GOLD + Frisk.capitalize(qaItem.getDisplayName()));
+        if (SimplePolice.qaInstalled) {
+            for (CustomBaseObject qaItem : DatabaseUtility.getContrabandQAItems()) {
+                textToReturn.add(ChatColor.GOLD + Frisk.capitalize(qaItem.getDisplayName()));
+            }
         }
+
         sender.sendMessage(textToReturn.toArray(new String[0]));
     }
 
