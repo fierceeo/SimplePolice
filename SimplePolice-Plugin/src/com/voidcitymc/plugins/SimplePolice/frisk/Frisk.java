@@ -45,7 +45,7 @@ public class Frisk implements Listener {
                     for (ItemStack item: contents) {
                         if (Utility.isContraband(item)) {
                             if (Math.random() * 100 <= ConfigValues.percentOfFindingContraband) {
-                                if (!item.getItemMeta().getDisplayName().equals("")) {
+                                if (item.getItemMeta().getDisplayName() != null && !item.getItemMeta().getDisplayName().equals("")) {
                                     textToReturn.add(ChatColor.DARK_AQUA + "" + item.getAmount() + "x " + item.getItemMeta().getDisplayName());
                                 } else {
                                     textToReturn.add(ChatColor.DARK_AQUA + "" + item.getAmount() + "x " + capitalize((item.getType().toString().replace("_", " ")).toLowerCase()));
