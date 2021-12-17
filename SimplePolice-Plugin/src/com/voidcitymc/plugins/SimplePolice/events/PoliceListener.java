@@ -20,7 +20,7 @@ public class PoliceListener implements Listener {
             Player attackedPlayer = (Player) event.getEntity();
 
             if (!Utility.inSafeArea(attackedPlayer)) {
-                if (Utility.isPolice(attackerPlayer.getUniqueId().toString()) && (attackerPlayer.getInventory().getItemInMainHand().getType() == ConfigValues.batonMaterialType)) {
+                if (Utility.isPolice(attackerPlayer.getUniqueId().toString()) && (LegacyUtils.getItemInMainHand(attackerPlayer.getInventory()).getType() == ConfigValues.batonMaterialType)) {
                     if (Bukkit.getOnlinePlayers().contains(attackedPlayer)) {
                         if (!DatabaseUtility.getJailLocations().isEmpty()) {
                             attackedPlayer.sendMessage(Messages.getMessage("ArrestMsg"));

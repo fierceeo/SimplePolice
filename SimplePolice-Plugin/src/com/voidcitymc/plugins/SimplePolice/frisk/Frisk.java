@@ -1,5 +1,6 @@
 package com.voidcitymc.plugins.SimplePolice.frisk;
 
+import com.voidcitymc.plugins.SimplePolice.LegacyUtils;
 import com.voidcitymc.plugins.SimplePolice.Utility;
 import com.voidcitymc.plugins.SimplePolice.apiInternals.EventManager;
 import com.voidcitymc.plugins.SimplePolice.config.ConfigValues;
@@ -23,7 +24,7 @@ public class Frisk implements Listener {
         if (event.getRightClicked() instanceof Player) {
             Player police = event.getPlayer();
             Player targetedPlayer = (Player) event.getRightClicked();
-            if (ConfigValues.friskingEnabled && Utility.isPolice(police.getUniqueId().toString()) && police.getInventory().getItemInMainHand().getType().equals(ConfigValues.friskStickMaterialType)) {
+            if (ConfigValues.friskingEnabled && Utility.isPolice(police.getUniqueId().toString()) && LegacyUtils.getItemInMainHand(police.getInventory()).getType().equals(ConfigValues.friskStickMaterialType)) {
                 long timeLeft = System.currentTimeMillis() - cooldownManager.getCooldown(targetedPlayer.getUniqueId());
 
                 if (TimeUnit.MILLISECONDS.toSeconds(timeLeft) >= FriskCooldownManager.DEFAULT_COOLDOWN) {

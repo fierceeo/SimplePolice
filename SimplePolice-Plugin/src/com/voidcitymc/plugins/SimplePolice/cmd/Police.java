@@ -1,6 +1,7 @@
 package com.voidcitymc.plugins.SimplePolice.cmd;
 
 import com.voidcitymc.plugins.SimplePolice.DatabaseUtility;
+import com.voidcitymc.plugins.SimplePolice.LegacyUtils;
 import com.voidcitymc.plugins.SimplePolice.apiInternals.EventManager;
 import com.voidcitymc.plugins.SimplePolice.config.Config;
 import com.voidcitymc.plugins.SimplePolice.config.ConfigValues;
@@ -224,9 +225,9 @@ public class Police implements Listener, CommandExecutor {
     }
 
     private void friskListAdd(Player player) {
-        if (!Utility.isContraband(player.getInventory().getItemInMainHand())) {
-            if (!player.getInventory().getItemInMainHand().getType().equals(Material.AIR)) {
-                Utility.addContrabandItem(player.getInventory().getItemInMainHand());
+        if (!Utility.isContraband(LegacyUtils.getItemInMainHand(player.getInventory()))) {
+            if (!LegacyUtils.getItemInMainHand(player.getInventory()).getType().equals(Material.AIR)) {
+                Utility.addContrabandItem(LegacyUtils.getItemInMainHand(player.getInventory()));
                 player.sendMessage(Messages.getMessage("AdminAddItem"));
             } else {
                 player.sendMessage(Messages.getMessage("AdminAddItemFail"));
@@ -237,8 +238,8 @@ public class Police implements Listener, CommandExecutor {
     }
 
     private void friskListRemove(Player player) {
-        if (!player.getInventory().getItemInMainHand().getType().equals(Material.AIR)) {
-            Utility.removeContrabandItem(player.getInventory().getItemInMainHand());
+        if (!LegacyUtils.getItemInMainHand(player.getInventory()).getType().equals(Material.AIR)) {
+            Utility.removeContrabandItem(LegacyUtils.getItemInMainHand(player.getInventory()));
             player.sendMessage(Messages.getMessage("AdminRemoveItem"));
         } else {
             player.sendMessage(Messages.getMessage("AdminRemoveItemFail"));
