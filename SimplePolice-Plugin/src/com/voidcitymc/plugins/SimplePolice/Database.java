@@ -37,6 +37,9 @@ public class Database<T> {
             Gson gson = new GsonBuilder().create();
             Reader reader = new FileReader(databaseFile);
             data = gson.fromJson(reader, typeToken.getType());
+            if (data == null) {
+                data = new ArrayList<>();
+            }
             reader.close();
         } catch (IOException e) {
             return false;
