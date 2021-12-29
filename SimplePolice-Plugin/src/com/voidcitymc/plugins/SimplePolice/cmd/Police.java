@@ -297,7 +297,7 @@ public class Police implements Listener, CommandExecutor {
 
     private void addJail(Player player, String jailName) {
         if (!jailName.equals("")) {
-            if (DatabaseUtility.getJailLocations().contains(jailName)) {
+            if (!Utility.jailList().contains(jailName)) {
                 DatabaseUtility.addJail(jailName, player.getLocation());
                 player.sendMessage(Messages.getMessage("PoliceAdminSetJailSuccess", jailName));
             } else {

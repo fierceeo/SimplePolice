@@ -105,8 +105,8 @@ public class DatabaseUtility {
     }
 
     public static void addJail(String jailName, Location location) {
-        if (!jailLocationsDB.getData().contains(jailName)) {
-            Jail.JailLocation jailLocation = new Jail.JailLocation(jailName, location);
+        Jail.JailLocation jailLocation = new Jail.JailLocation(jailName, location);
+        if (!jailLocationsDB.getData().contains(jailLocation)) {
             jailLocationsDB.add(jailLocation);
             jailLocationsDB.save();
         }
