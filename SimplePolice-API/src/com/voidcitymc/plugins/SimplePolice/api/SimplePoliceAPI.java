@@ -1,7 +1,5 @@
 package com.voidcitymc.plugins.SimplePolice.api;
 
-import com.voidcitymc.plugins.SimplePolice.api.events.GenericSimplePoliceEvent;
-
 
 public interface SimplePoliceAPI {
 
@@ -11,7 +9,7 @@ public interface SimplePoliceAPI {
      * @param event The event to register
      */
 
-    void registerEvent(GenericSimplePoliceEvent event);
+    void registerEvent(SimplePoliceEvent event);
 
     /**
      * Returns utility class holding internal methods

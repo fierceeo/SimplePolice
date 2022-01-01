@@ -2,7 +2,7 @@ package com.voidcitymc.plugins.SimplePolice;
 
 import com.voidcitymc.plugins.SimplePolice.api.SimplePoliceAPI;
 import com.voidcitymc.plugins.SimplePolice.api.Utility;
-import com.voidcitymc.plugins.SimplePolice.api.events.GenericSimplePoliceEvent;
+import com.voidcitymc.plugins.SimplePolice.api.SimplePoliceEvent;
 import com.voidcitymc.plugins.SimplePolice.apiInternals.EventManager;
 import com.voidcitymc.plugins.SimplePolice.cmd.NineOneOne;
 import com.voidcitymc.plugins.SimplePolice.cmd.Police;
@@ -76,7 +76,7 @@ public class SimplePolice extends JavaPlugin implements SimplePoliceAPI {
     }
 
     @Override
-    public void registerEvent(GenericSimplePoliceEvent event) {
+    public void registerEvent(SimplePoliceEvent event) {
         EventManager.registerEvent(event);
     }
 

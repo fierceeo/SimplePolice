@@ -1,5 +1,6 @@
 package com.voidcitymc.plugins.SimplePolice.apiInternals;
 
+import com.voidcitymc.plugins.SimplePolice.api.SimplePoliceEvent;
 import com.voidcitymc.plugins.SimplePolice.api.events.*;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -18,7 +19,7 @@ public class EventManager {
 
     public static boolean usingListenerApi = false;
 
-    public static void registerEvent(GenericSimplePoliceEvent event) {
+    public static void registerEvent(SimplePoliceEvent event) {
         usingListenerApi = true;
         if (event instanceof PlayerArrestEvent) {
             playerArrestEvents.add((PlayerArrestEvent) event);
