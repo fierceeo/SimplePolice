@@ -20,33 +20,37 @@ public class PoliceListener implements Listener {
             Player attackedPlayer = (Player) event.getEntity();
 
             if (!Utility.inSafeArea(attackedPlayer)) {
-                if (Utility.isPolice(attackerPlayer.getUniqueId().toString()) && (LegacyUtils.getItemInMainHand(attackerPlayer.getInventory()).getType() == ConfigValues.batonMaterialType)) {
-                    if (Bukkit.getOnlinePlayers().contains(attackedPlayer)) {
-                        if (!DatabaseUtility.getJailLocations().isEmpty()) {
-                            attackedPlayer.sendMessage(Messages.getMessage("ArrestMsg"));
+                if (ConfigValues.allowArrestsWithoutContraband || Utility.containsContraband(attackedPlayer.getInventory().getContents())) {
+                    if (Utility.isPolice(attackerPlayer.getUniqueId().toString()) && (LegacyUtils.getItemInMainHand(attackerPlayer.getInventory()).getType() == ConfigValues.batonMaterialType)) {
+                        if (Bukkit.getOnlinePlayers().contains(attackedPlayer)) {
+                            if (!DatabaseUtility.getJailLocations().isEmpty()) {
+                                attackedPlayer.sendMessage(Messages.getMessage("ArrestMsg"));
 
-                            String jailName = Jail.getJail();
+                                String jailName = Jail.getJail();
 
-                            if (!Jail.isJailed(attackedPlayer.getUniqueId())) {
-                                if (attackedPlayer.isDead()) {
-                                    attackedPlayer.spigot().respawn();
+                                if (!Jail.isJailed(attackedPlayer.getUniqueId())) {
+                                    if (attackedPlayer.isDead()) {
+                                        attackedPlayer.spigot().respawn();
+                                    }
+                                    Jail.previousLocation.put(attackedPlayer.getUniqueId().toString(), attackedPlayer.getLocation());
+                                    attackedPlayer.teleport(Jail.getJailLocation(jailName));
                                 }
-                                Jail.previousLocation.put(attackedPlayer.getUniqueId().toString(), attackedPlayer.getLocation());
-                                attackedPlayer.teleport(Jail.getJailLocation(jailName));
+
+                                Utility.payPoliceOnArrest(attackerPlayer, attackedPlayer);
+                                Utility.takeMoneyOnArrest(attackedPlayer);
+
+                                JailGUI.onPlayerArrest(attackerPlayer, attackedPlayer, jailName);
+                                EventManager.runPlayerArrestEvent(attackerPlayer, attackedPlayer, Jail.previousLocation.get(attackedPlayer.getUniqueId().toString()));
+                                event.setCancelled(true);
+                            } else {
+                                attackerPlayer.sendMessage(Messages.getMessage("ArrestNoJails"));
                             }
-
-                            Utility.payPoliceOnArrest(attackerPlayer, attackedPlayer);
-                            Utility.takeMoneyOnArrest(attackedPlayer);
-
-                            JailGUI.onPlayerArrest(attackerPlayer, attackedPlayer, jailName);
-                            EventManager.runPlayerArrestEvent(attackerPlayer, attackedPlayer, Jail.previousLocation.get(attackedPlayer.getUniqueId().toString()));
-                            event.setCancelled(true);
                         } else {
-                            attackerPlayer.sendMessage(Messages.getMessage("ArrestNoJails"));
+                            attackerPlayer.sendMessage(Messages.getMessage("ArrestNPC"));
                         }
-                    } else {
-                        attackerPlayer.sendMessage(Messages.getMessage("ArrestNPC"));
                     }
+                } else {
+                    attackerPlayer.sendMessage(Messages.getMessage("ArrestNoContraband"));
                 }
             } else {
                 attackerPlayer.sendMessage(Messages.getMessage("ArrestSafeArea"));

@@ -76,6 +76,15 @@ public class Utility {
         }
     }
 
+    public static boolean containsContraband(ItemStack[] inventory) {
+        for (ItemStack item: inventory) {
+            if (item != null && isContraband(item)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
 
 

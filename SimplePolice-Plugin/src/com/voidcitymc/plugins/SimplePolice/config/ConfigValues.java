@@ -29,6 +29,7 @@ public class ConfigValues {
     public static boolean showCords911;
     public static boolean usePlayerDisplayNameInPoliceChat;
     public static double[] jailGUITimes;
+    public static boolean allowArrestsWithoutContraband;
 
 
     public static void initialize(Config config) {
@@ -53,6 +54,7 @@ public class ConfigValues {
         showCords911 = Boolean.parseBoolean(config.getProperty("ShowCords911"));
         usePlayerDisplayNameInPoliceChat = Boolean.parseBoolean(config.getProperty("UsePlayerDisplayNameInPoliceChat"));
         jailGUITimes = Arrays.stream(config.getProperty("JailGUITimes").split(",")).mapToDouble(Double::parseDouble).toArray();
+        allowArrestsWithoutContraband = Boolean.parseBoolean(config.getProperty("AllowArrestsWithoutContraband"));
     }
 
 }
