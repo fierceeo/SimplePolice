@@ -6,12 +6,12 @@
 	<parent>
 		<artifactId>SimplePolice</artifactId>
 		<groupId>com.voidcity.SimplePolice-Project</groupId>
-		<version>6.1</version>
+		<version>6.1.1</version>
 	</parent>
 
 	<groupId>com.voidcity.SimplePolice</groupId>
 	<artifactId>SimplePolice-Plugin</artifactId>
-	<version>6.1</version>
+	<version>6.1.1</version>
 	<packaging>jar</packaging>
 
 	<dependencies>
@@ -51,7 +51,7 @@
 		<dependency>
 			<groupId>org.spigotmc</groupId>
 			<artifactId>spigot-api</artifactId>
-			<version>1.18-R0.1-SNAPSHOT</version>
+			<version>1.19-R0.1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>

@@ -11,7 +11,16 @@ import java.util.*;
 
 public class DatabaseUtility {
 
-    private static Database<Map<String, Object>> contrabandItemsDB;
+    static class LoreSeralizedItemStackPair {
+        LoreSeralizedItemStackPair (Map<String, Object> itemStack, List<String> lore) {
+            this.itemStack = itemStack;
+            this.lore = lore;
+        }
+        Map<String, Object> itemStack;
+        List<String> lore;
+    }
+
+    private static Database<LoreSeralizedItemStackPair> contrabandItemsDB;
 
     private static Database<CustomBaseObject> contrabandQAItemsDB;
 
@@ -22,7 +31,7 @@ public class DatabaseUtility {
 
     protected static void initDatabase() {
         (new File(SimplePolice.getPluginFolderPath()+File.separator+"Database")).mkdirs();
-        contrabandItemsDB = new Database<>("contrabandItems", new TypeToken<ArrayList<Map<String, Object>>>(){});
+        contrabandItemsDB = new Database<>("contrabandItems", new TypeToken<ArrayList<LoreSeralizedItemStackPair>>(){});
         contrabandItemsDB.load();
         if (SimplePolice.qaInstalled) {
             contrabandQAItemsDB = new Database<>("contrabandQaItems", new TypeToken<ArrayList<CustomBaseObject>>() {});
@@ -38,10 +47,10 @@ public class DatabaseUtility {
         return contrabandQAItemsDB.getData();
     }
 
-    public static ArrayList<ItemStack> getContrabandItems() {
-        ArrayList<ItemStack> contrabandItems = new ArrayList<>();
-        for (Map<String, Object> item: contrabandItemsDB.getData()) {
-            contrabandItems.add(ItemStack.deserialize(item));
+    public static ArrayList<Utility.LoreItemStackPair> getContrabandItems() {
+        ArrayList<Utility.LoreItemStackPair> contrabandItems = new ArrayList<>();
+        for (LoreSeralizedItemStackPair item: contrabandItemsDB.getData()) {
+            contrabandItems.add(new Utility.LoreItemStackPair(ItemStack.deserialize(item.itemStack), item.lore));
         }
         return contrabandItems;
     }
@@ -78,17 +87,17 @@ public class DatabaseUtility {
         contrabandQAItemsDB.save();
     }
 
-    protected static void addItem(ItemStack item) {
+    protected static void addItem(Utility.LoreItemStackPair item) {
         if (item == null) {
             return;
         }
-        ItemStack genericItem = Utility.generifyItemStack(item);
-        contrabandItemsDB.add(genericItem.serialize());
+
+        contrabandItemsDB.add(new LoreSeralizedItemStackPair(item.itemStack.serialize(), item.lore));
         contrabandItemsDB.save();
     }
 
-    protected static void removeItem(ItemStack item) {
-        contrabandItemsDB.remove(item.serialize());
+    protected static void removeItem(Utility.LoreItemStackPair item) {
+        contrabandItemsDB.remove(new LoreSeralizedItemStackPair(item.itemStack.serialize(), item.lore));
         contrabandItemsDB.save();
     }
 

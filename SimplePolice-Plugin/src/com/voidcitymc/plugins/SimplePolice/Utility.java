@@ -24,6 +24,30 @@ import java.util.*;
 
 public class Utility {
 
+    static class LoreItemStackPair {
+        LoreItemStackPair (ItemStack itemStack, List<String> lore) {
+            this.itemStack = itemStack;
+            this.lore = lore;
+        }
+        ItemStack itemStack;
+        List<String> lore;
+
+        @Override
+        public boolean equals(Object compare) {
+            if (compare == this) {
+                return true;
+            }
+
+            if (!(compare instanceof LoreItemStackPair)) {
+                return false;
+            }
+
+            LoreItemStackPair comparePair = (LoreItemStackPair) compare;
+
+            return itemStack.equals(comparePair.itemStack) && lore.equals(comparePair.lore);
+        }
+    }
+
     public static boolean vaultEnabled() {
         return SimplePolice.vaultInstalled;
     }
@@ -193,10 +217,10 @@ public class Utility {
         if (item == null || isContraband(item)) {
             return;
         }
-        ItemStack itemClone = generifyItemStack(item);
-        if (isQaItem(itemClone)) {
+        LoreItemStackPair itemClone = generifyItemStack(item);
+        if (isQaItem(itemClone.itemStack)) {
             System.out.println("[Debug] Adding qa item "+ itemClone);
-            DatabaseUtility.addQAItem(QualityArmory.getCustomItem(itemClone));
+            DatabaseUtility.addQAItem(QualityArmory.getCustomItem(itemClone.itemStack));
         } else {
             System.out.println("[Debug] Adding item "+ itemClone);
             DatabaseUtility.addItem(itemClone);
@@ -207,9 +231,9 @@ public class Utility {
         if (item == null || !isContraband(item)) {
             return;
         }
-        ItemStack itemClone = generifyItemStack(item);
-        if (isQaItem(itemClone)) {
-            DatabaseUtility.addQAItem(QualityArmory.getCustomItem(itemClone));
+        LoreItemStackPair itemClone = generifyItemStack(item);
+        if (isQaItem(itemClone.itemStack)) {
+            DatabaseUtility.addQAItem(QualityArmory.getCustomItem(itemClone.itemStack));
         } else {
             DatabaseUtility.addItem(itemClone);
         }
@@ -230,17 +254,29 @@ public class Utility {
         return item;
     }
 
-    public static ItemStack generifyItemStack(ItemStack item) {
+    public static LoreItemStackPair generifyItemStack(ItemStack item) {
         if (item == null) {
             return null;
         }
         ItemStack itemClone = item.clone();
         itemClone.setAmount(1);
-        return itemClone;
+
+        if (isQaItem(item)) {
+            new LoreItemStackPair(itemClone, null);
+        }
+
+        List<String> lore = null;
+        if (itemClone.getItemMeta().hasLore()) {
+            lore = itemClone.getItemMeta().getLore();
+        }
+
+        itemClone.setItemMeta(null);
+
+        return new LoreItemStackPair(itemClone, lore);
     }
 
     public static boolean isContraband(ItemStack item) {
-        if (isQaItem(item) && DatabaseUtility.getContrabandQAItems().contains(generifyQACustomBaseObject(QualityArmory.getCustomItem(generifyItemStack(item))))) {
+        if (isQaItem(item) && DatabaseUtility.getContrabandQAItems().contains(generifyQACustomBaseObject(QualityArmory.getCustomItem(generifyItemStack(item).itemStack)))) {
             return true;
         } else if (DatabaseUtility.getContrabandItems().contains(generifyItemStack(item))) {
             return true;

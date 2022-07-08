@@ -6,12 +6,12 @@
 	<parent>
 		<artifactId>SimplePolice</artifactId>
 		<groupId>com.voidcity.SimplePolice-Project</groupId>
-		<version>6.1</version>
+		<version>6.1.1</version>
 	</parent>
 
 	<groupId>com.voidcity.SimplePolice-API</groupId>
 	<artifactId>SimplePolice-API</artifactId>
-	<version>6.1</version>
+	<version>6.1.1</version>
 	<packaging>jar</packaging>
 
     <dependencies>
