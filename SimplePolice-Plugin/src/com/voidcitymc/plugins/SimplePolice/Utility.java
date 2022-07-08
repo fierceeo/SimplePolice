@@ -24,13 +24,15 @@ import java.util.*;
 
 public class Utility {
 
-    static class LoreItemStackPair {
-        LoreItemStackPair (ItemStack itemStack, List<String> lore) {
+    public static class LoreItemStackPair {
+        LoreItemStackPair (ItemStack itemStack, String displayName, List<String> lore) {
             this.itemStack = itemStack;
+            this.displayName = displayName;
             this.lore = lore;
         }
-        ItemStack itemStack;
-        List<String> lore;
+        public final ItemStack itemStack;
+        public final String displayName;
+        public final List<String> lore;
 
         @Override
         public boolean equals(Object compare) {
@@ -262,17 +264,19 @@ public class Utility {
         itemClone.setAmount(1);
 
         if (isQaItem(item)) {
-            new LoreItemStackPair(itemClone, null);
+            new LoreItemStackPair(itemClone, null, null);
         }
 
         List<String> lore = null;
+        String displayName = null;
         if (itemClone.getItemMeta().hasLore()) {
             lore = itemClone.getItemMeta().getLore();
+            displayName = itemClone.getItemMeta().getDisplayName();
         }
 
         itemClone.setItemMeta(null);
 
-        return new LoreItemStackPair(itemClone, lore);
+        return new LoreItemStackPair(itemClone, displayName, lore);
     }
 
     public static boolean isContraband(ItemStack item) {

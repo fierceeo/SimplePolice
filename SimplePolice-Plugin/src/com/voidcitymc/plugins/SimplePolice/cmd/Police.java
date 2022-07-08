@@ -251,11 +251,12 @@ public class Police implements Listener, CommandExecutor {
         ArrayList<String> textToReturn = new ArrayList<>();
         textToReturn.add(Messages.getMessage("PoliceAdminFriskList"));
 
-        for (ItemStack item: DatabaseUtility.getContrabandItems()) {
-            if (item.getItemMeta().getDisplayName() != null && !item.getItemMeta().getDisplayName().equals("")) {
-                textToReturn.add(ChatColor.DARK_AQUA + item.getItemMeta().getDisplayName());
+        for (Utility.LoreItemStackPair item: DatabaseUtility.getContrabandItems()) {
+
+            if (item.itemStack.getItemMeta().getDisplayName() != null && !item.itemStack.getItemMeta().getDisplayName().equals("")) {
+                textToReturn.add(ChatColor.DARK_AQUA + item.itemStack.getItemMeta().getDisplayName());
             } else {
-                textToReturn.add(ChatColor.DARK_AQUA + Frisk.capitalize((item.getType().toString().replace("_", " ")).toLowerCase()));
+                textToReturn.add(ChatColor.DARK_AQUA + Frisk.capitalize((item.itemStack.getType().toString().replace("_", " ")).toLowerCase()));
             }
         }
 

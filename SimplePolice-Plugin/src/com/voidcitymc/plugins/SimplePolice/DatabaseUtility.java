@@ -12,12 +12,14 @@ import java.util.*;
 public class DatabaseUtility {
 
     static class LoreSeralizedItemStackPair {
-        LoreSeralizedItemStackPair (Map<String, Object> itemStack, List<String> lore) {
+        LoreSeralizedItemStackPair (Map<String, Object> itemStack, String displayName, List<String> lore) {
             this.itemStack = itemStack;
+            this.displayName = displayName;
             this.lore = lore;
         }
-        Map<String, Object> itemStack;
-        List<String> lore;
+        public final Map<String, Object> itemStack;
+        public final String displayName;
+        public final List<String> lore;
     }
 
     private static Database<LoreSeralizedItemStackPair> contrabandItemsDB;
@@ -50,7 +52,7 @@ public class DatabaseUtility {
     public static ArrayList<Utility.LoreItemStackPair> getContrabandItems() {
         ArrayList<Utility.LoreItemStackPair> contrabandItems = new ArrayList<>();
         for (LoreSeralizedItemStackPair item: contrabandItemsDB.getData()) {
-            contrabandItems.add(new Utility.LoreItemStackPair(ItemStack.deserialize(item.itemStack), item.lore));
+            contrabandItems.add(new Utility.LoreItemStackPair(ItemStack.deserialize(item.itemStack), item.displayName, item.lore));
         }
         return contrabandItems;
     }
@@ -92,12 +94,12 @@ public class DatabaseUtility {
             return;
         }
 
-        contrabandItemsDB.add(new LoreSeralizedItemStackPair(item.itemStack.serialize(), item.lore));
+        contrabandItemsDB.add(new LoreSeralizedItemStackPair(item.itemStack.serialize(), item.displayName, item.lore));
         contrabandItemsDB.save();
     }
 
     protected static void removeItem(Utility.LoreItemStackPair item) {
-        contrabandItemsDB.remove(new LoreSeralizedItemStackPair(item.itemStack.serialize(), item.lore));
+        contrabandItemsDB.remove(new LoreSeralizedItemStackPair(item.itemStack.serialize(), item.displayName, item.lore));
         contrabandItemsDB.save();
     }
 
