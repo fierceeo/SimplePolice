@@ -33,6 +33,8 @@ public interface Utility {
 
     ArrayList<UUID> jailedPlayers();
 
+    boolean isJailed(UUID player);
+
     String getPlayerCurrentJail(UUID player);
 
     double sentenceLength(UUID player);

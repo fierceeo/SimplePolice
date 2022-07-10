@@ -52,6 +52,10 @@ public class Utility implements com.voidcitymc.plugins.SimplePolice.api.Utility 
                 return Jail.jailedPlayers();
         }
 
+        public boolean isJailed(UUID player) {
+                return Jail.isJailed(player);
+        }
+
         public String getPlayerCurrentJail(UUID player) {
                 return Jail.getPlayerCurrentJail(player);
         }
