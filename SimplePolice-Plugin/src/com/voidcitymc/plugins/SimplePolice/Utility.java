@@ -46,7 +46,7 @@ public class Utility {
 
             LoreItemStackPair comparePair = (LoreItemStackPair) compare;
 
-            return itemStack.equals(comparePair.itemStack) && lore.equals(comparePair.lore);
+            return itemStack.equals(comparePair.itemStack) && ((lore == null && comparePair.lore == null) || (lore != null && comparePair.lore != null && lore.equals(comparePair.lore)));
         }
     }
 
