@@ -290,70 +290,39 @@ public class Utility {
 
     //todo: cleanup method
     public static boolean isLocationSafe(Location loc1) {
+        Location loc2 = new Location(loc1.getWorld(), loc1.getX(), loc1.getY() + 1, loc1.getZ());
         //check if the location is safe to teleport to (air)
-        if (loc1.getBlock().getType().equals(Material.AIR)) {
-            //we know that the inital location is safe, so we need to check one block up
-            //location one block up
-            Location loc2 = new Location(loc1.getWorld(), loc1.getX(), loc1.getY() + 1, loc1.getZ());
-            //2nd block is safe too
-            return loc2.getBlock().getType().equals(Material.AIR);
-            //loc2 didn't check out
-        }
-        //because that method didn't pass, we know that the location isn't safe
-        return false;
+        return (loc1.getBlock().getType().equals(Material.AIR) && loc2.getBlock().getType().equals(Material.AIR));
     }
 
     //todo: cleanup method
     public static Location policeTp(Player player, int MaxValTp) {
-        Location LocP = player.getLocation();
-        //players x,y,z
-        int pX = LocP.getBlockX();
-        int pY = LocP.getBlockY();
-        int pZ = LocP.getBlockZ();
+        Location playerLocation = player.getLocation();
+        World world = player.getWorld();
+
+        int pX = playerLocation.getBlockX();
+        int pY = playerLocation.getBlockY();
+        int pZ = playerLocation.getBlockZ();
 
         //generate a random number from 0 to the farthest /police tp value in config (MaxValTp)
-        double drandom1 = Math.random() * MaxValTp;
-        double drandom2 = Math.random() * MaxValTp;
-        int random1 = (int) Math.round(drandom1);
-        int random2 = (int) Math.round(drandom2);
+        pX += Math.round((Math.random() * 2 * MaxValTp) - MaxValTp);
+        pY += Math.round((Math.random() * 2 * MaxValTp) - MaxValTp);
 
-        //should number be negative or positave
-
-        //number from 0 to 1
-        int posOrNeg = (int) Math.round(Math.random());
-        if (posOrNeg == 1) {
-            random1 = random1 - (2 * random1);
-        }
-
-        posOrNeg = (int) Math.round(Math.random());
-        if (posOrNeg == 1) {
-            random2 = random2 - (2 * random2);
-        }
-
-
-        int nX = pX + random1;
-        int nY = pY;
-        int nZ = pZ + random2;
-
-        Location returnLocYOneDown = new Location(player.getWorld(), nX, nY - 1, nZ);
-
-        while (returnLocYOneDown.getBlock().getType().equals(Material.AIR)) {
-            nY = nY - 1;
-            returnLocYOneDown = new Location(player.getWorld(), nX, nY - 1, nZ);
-        }
-
-        Location returnLoc = returnLocYOneDown;
-
+        Location checkLocation = new Location(world, pX, pY, pZ);
 
         //keeps increasing y cord until location is safe
-        while (!isLocationSafe(returnLoc)) {
-            nY = nY + 1;
-            returnLoc = new Location(player.getWorld(), nX, nY, nZ);
+        while (!isLocationSafe(checkLocation)) {
+            pY += 1;
+            if ((pY + 1) >= world.getMaxHeight()) {
+                //unable to find location, escape by returning player's position
+                checkLocation = playerLocation;
+                break;
+            }
+            
+            checkLocation = new Location(player.getWorld(), pX, pY, pZ);
         }
 
-        return returnLoc;
-
-
+        return checkLocation;
     }
 
     public static String timeUnit(int seconds) {
