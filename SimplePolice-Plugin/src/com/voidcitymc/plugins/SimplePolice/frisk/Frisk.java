@@ -43,7 +43,7 @@ public class Frisk implements Listener {
                     ArrayList<ItemStack> foundContrabandItems = new ArrayList<>();
 
                     for (ItemStack item: contents) {
-                        if (Utility.isContraband(item)) {
+                        if (item != null && Utility.isContraband(item)) {
                             if (Math.random() * 100 <= ConfigValues.percentOfFindingContraband) {
                                 if (item.getItemMeta().getDisplayName() != null && !item.getItemMeta().getDisplayName().equals("")) {
                                     textToReturn.add(ChatColor.DARK_AQUA + "" + item.getAmount() + "x " + item.getItemMeta().getDisplayName());
@@ -54,7 +54,6 @@ public class Frisk implements Listener {
                                 targetedPlayer.getInventory().removeItem(item);
                                 police.getInventory().addItem(item);
                             }
-
                         }
                     }
 
